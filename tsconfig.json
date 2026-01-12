@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        // "verbatimModuleSyntax": true,  // Commented out - causing too many type import errors
+        "baseUrl": ".",
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "module": "esnext",
+        "target": "es2018",
+        "allowSyntheticDefaultImports": true,
+        "importHelpers": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "lib": [
+            "dom",
+            "es5",
+            "scripthost",
+            "es2018"
+        ],
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.svelte"
+    ]
+}

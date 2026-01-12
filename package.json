@@ -1,0 +1,43 @@
+{
+    "name": "obsidian-ai-assistant",
+    "version": "1.0.0",
+    "description": "An Obsidian desktop plugin for AI interactions with Svelte",
+    "main": "main.js",
+    "scripts": {
+        "dev": "tailwindcss -i ./src/styles.css -o ./styles.css --watch & node esbuild.config.mjs",
+        "build": "tailwindcss -i ./src/styles.css -o ./styles.css && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+        "version": "node version-bump.mjs && git add manifest.json versions.json",
+        "svelte-check": "svelte-check --tsconfig tsconfig.json"
+    },
+    "keywords": [
+        "obsidian",
+        "obsidian-plugin",
+        "ai",
+        "llm"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^16.11.6",
+        "@typescript-eslint/eslint-plugin": "5.29.0",
+        "@typescript-eslint/parser": "5.29.0",
+        "autoprefixer": "^10.4.23",
+        "builtin-modules": "3.3.0",
+        "esbuild": "0.17.3",
+        "esbuild-svelte": "^0.8.0",
+        "obsidian": "latest",
+        "postcss": "^8.5.6",
+        "svelte": "^4.2.12",
+        "svelte-check": "^3.6.2",
+        "svelte-preprocess": "^5.1.3",
+        "tailwindcss": "^3.4.17",
+        "tslib": "2.4.0",
+        "typescript": "~5.6.0"
+    },
+    "dependencies": {
+        "@types/uuid": "^10.0.0",
+        "clsx": "^2.1.0",
+        "tailwind-merge": "^2.2.0",
+        "uuid": "^13.0.0"
+    }
+}
