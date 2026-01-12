@@ -3,7 +3,7 @@
     "name": "Obsidian AI Assistant",
     "version": "1.0.0",
     "minAppVersion": "0.15.0",
-    "description": "A fully private AI assistant for Obsidian that runs entirely on your machine. Connect to local models (Ollama, vLLM, llama.cpp) or self-hosted endpoints. Explain, expand, rewrite, summarize, and research topics. Create new notes from AI insights or chat across your entire vault. Optional web search grounding via SearXNG keeps your vault private while enriching AI context.",
+    "description": "A fully private AI assistant for Obsidian that runs entirely on your machine (macOS/Linux). Connect to local models (Ollama, vLLM, llama.cpp) or self-hosted endpoints. Explain, expand, rewrite, summarize, and research topics. Create new notes from AI insights or chat across your entire vault. Optional web search grounding via SearXNG keeps your vault private while enriching AI context.",
     "author": "SuperSonnix71",
     "authorUrl": "https://github.com/SuperSonnix71/Obsidian-AI-Assistant",
     "isDesktopOnly": true
