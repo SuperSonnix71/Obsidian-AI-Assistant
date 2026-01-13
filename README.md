@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/icon.png" alt="Obsidian AI Assistant" width="100" height="100" />
+  <img src="https://github.com/user-attachments/assets/af8d9a43-6eac-4367-851a-2d9406aa797e" alt="Obsidian AI Assistant" width="100" height="100" />
 </div>
 
 <br>
