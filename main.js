@@ -5765,6 +5765,9 @@ function stripThinkingTags2(text2) {
   cleaned = cleaned.replace(/<\/?think>/gi, "");
   return cleaned.trim();
 }
+function isObsidianCommandMessage(content) {
+  return content.trim().startsWith("<obsidian_command>");
+}
 function cleanReferenceMarkers(text2, searchResults) {
   let cleaned = text2;
   cleaned = cleaned.replace(/\[REF\]web_search_results\.(\d+)\[\/REF\]/gi, (match, index) => {
@@ -6175,7 +6178,7 @@ function instance3($$self, $$props, $$invalidate) {
       researchTitle = h1Match[1].trim();
       cleanContent = cleanContent.replace(/^#\s+[^\n]+\n+/, "");
     } else {
-      const firstUserMsg = messages.find((m) => m.role === "user");
+      const firstUserMsg = messages.find((m) => m.role === "user" && !isObsidianCommandMessage(m.content));
       if (firstUserMsg) {
         researchTitle = firstUserMsg.content.split("\n")[0].slice(0, 80);
       }
@@ -6229,8 +6232,8 @@ ${cleanContent}`;
     if (messages.length === 0)
       return;
     let noteTitle = "";
-    const firstUserMsg = messages.find((m) => m.role === "user");
-    const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant" && !m.content.trim().startsWith("<obsidian_command>"));
+    const firstUserMsg = messages.find((m) => m.role === "user" && !isObsidianCommandMessage(m.content));
+    const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant" && !isObsidianCommandMessage(m.content));
     if (lastAssistantMsg) {
       const h1Match = lastAssistantMsg.content.match(/^#\s+([^\n]+)/m);
       if (h1Match) {
@@ -6284,7 +6287,7 @@ ${cleanContent}`;
     lines.push(``);
     lines.push(`---`);
     lines.push(``);
-    const assistantMessages = messages.filter((m) => m.role === "assistant" && !m.content.trim().startsWith("<obsidian_command>"));
+    const assistantMessages = messages.filter((m) => m.role === "assistant" && !isObsidianCommandMessage(m.content));
     if (assistantMessages.length > 0) {
       let content = stripThinkingTags2(assistantMessages[assistantMessages.length - 1].content);
       content = content.replace(/^(Certainly!?|Sure!?|Of course!?|Here('s| is| are))[^\n]*\n+/i, "").replace(/^(Below is|Here's|The following)[^\n]*:\n+/i, "").replace(/^##?\s*(Answer|Response|Reply):?\s*\n+/i, "").trim();
@@ -6293,7 +6296,7 @@ ${cleanContent}`;
       lines.push(content);
     } else {
       for (const msg of messages) {
-        if (msg.content.trim().startsWith("<obsidian_command>"))
+        if (isObsidianCommandMessage(msg.content))
           continue;
         if (msg.role === "assistant") {
           let content = stripThinkingTags2(msg.content);

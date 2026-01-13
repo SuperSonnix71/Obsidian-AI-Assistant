@@ -609,6 +609,10 @@
         return cleaned.trim();
     }
 
+    function isObsidianCommandMessage(content: string): boolean {
+        return content.trim().startsWith("<obsidian_command>");
+    }
+
     // Remove [REF]...[/REF] markers and fix placeholder "Source Title" links
     function cleanReferenceMarkers(
         text: string,
@@ -685,7 +689,9 @@
             cleanContent = cleanContent.replace(/^#\s+[^\n]+\n+/, "");
         } else {
             // Fallback: use first user message as title
-            const firstUserMsg = messages.find((m) => m.role === "user");
+            const firstUserMsg = messages.find(
+                (m) => m.role === "user" && !isObsidianCommandMessage(m.content),
+            );
             if (firstUserMsg) {
                 researchTitle = firstUserMsg.content
                     .split("\n")[0]
@@ -753,13 +759,15 @@
 
         // Extract title from first user message or first H1 in assistant response
         let noteTitle = "";
-        const firstUserMsg = messages.find((m) => m.role === "user");
+        const firstUserMsg = messages.find(
+            (m) => m.role === "user" && !isObsidianCommandMessage(m.content),
+        );
         const lastAssistantMsg = [...messages]
             .reverse()
             .find(
                 (m) =>
                     m.role === "assistant" &&
-                    !m.content.trim().startsWith("<obsidian_command>"),
+                    !isObsidianCommandMessage(m.content),
             );
 
         if (lastAssistantMsg) {
@@ -837,7 +845,7 @@
         const assistantMessages = messages.filter(
             (m) =>
                 m.role === "assistant" &&
-                !m.content.trim().startsWith("<obsidian_command>"),
+                !isObsidianCommandMessage(m.content),
         );
 
         if (assistantMessages.length > 0) {
@@ -866,8 +874,7 @@
         } else {
             // Fallback: include all messages if no assistant messages found
             for (const msg of messages) {
-                if (msg.content.trim().startsWith("<obsidian_command>"))
-                    continue;
+                if (isObsidianCommandMessage(msg.content)) continue;
                 if (msg.role === "assistant") {
                     let content = stripThinkingTags(msg.content);
                     content = cleanReferenceMarkers(content, webSearchResults);
