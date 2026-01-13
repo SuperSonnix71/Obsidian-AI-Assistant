@@ -1,18 +1,15 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/af8d9a43-6eac-4367-851a-2d9406aa797e" alt="Obsidian AI Assistant" width="100" height="100" />
+  <img width="100" height="100" alt="icon" src="https://github.com/user-attachments/assets/af8d9a43-6eac-4367-851a-2d9406aa797e" />
 </div>
-
-<br>
-<br>
-<br>
 
 <div align="center">
   <a href="https://github.com/SuperSonnix71/obsidian-ai-assistant/releases">
-    <img src="https://img.shields.io/badge/Release-v1.1.0-blue" alt="Release v1.1.0" />
+    <img src="https://img.shields.io/badge/Release-v1.0.1-blue" alt="Release v1.0.1" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-green" alt="License MIT" />
   </a>
+  <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-lightgrey" alt="Platform macOS | Linux" />
 </div>
 
 <br>
