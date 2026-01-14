@@ -31,10 +31,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
 // src/main.ts
 var main_exports = {};
@@ -188,8 +185,7 @@ var HistoryService = class {
   }
   addMessage(threadId, message) {
     const thread = this.store.threads[threadId];
-    if (!thread)
-      return;
+    if (!thread) return;
     const settings = this.plugin.settings;
     const provider = settings.activeProvider;
     const providerSettings = settings.providers[provider];
@@ -211,8 +207,7 @@ var HistoryService = class {
   }
   clearThread(threadId) {
     const thread = this.store.threads[threadId];
-    if (!thread)
-      return;
+    if (!thread) return;
     thread.messages = [];
     thread.updatedAt = Date.now();
     this.save();
@@ -271,13 +266,11 @@ function run_tasks(now2) {
       task.f();
     }
   });
-  if (tasks.size !== 0)
-    raf(run_tasks);
+  if (tasks.size !== 0) raf(run_tasks);
 }
 function loop(callback) {
   let task;
-  if (tasks.size === 0)
-    raf(run_tasks);
+  if (tasks.size === 0) raf(run_tasks);
   return {
     promise: new Promise((fulfill) => {
       tasks.add(task = { c: callback, f: fulfill });
@@ -295,7 +288,7 @@ var globals = typeof window !== "undefined" ? window : typeof globalThis !== "un
 );
 
 // node_modules/svelte/src/runtime/internal/ResizeObserverSingleton.js
-var ResizeObserverSingleton = class {
+var ResizeObserverSingleton = class _ResizeObserverSingleton {
   /** @param {ResizeObserverOptions} options */
   constructor(options) {
     /**
@@ -334,7 +327,7 @@ var ResizeObserverSingleton = class {
     return (_a = this._observer) != null ? _a : this._observer = new ResizeObserver((entries) => {
       var _a2;
       for (const entry of entries) {
-        ResizeObserverSingleton.entries.set(entry.target, entry);
+        _ResizeObserverSingleton.entries.set(entry.target, entry);
         (_a2 = this._listeners.get(entry.target)) == null ? void 0 : _a2(entry);
       }
     });
@@ -363,8 +356,7 @@ function append_styles(target, style_sheet_id, styles) {
   }
 }
 function get_root_for_style(node) {
-  if (!node)
-    return document;
+  if (!node) return document;
   const root = node.getRootNode ? node.getRootNode() : node.ownerDocument;
   if (root && /** @type {ShadowRoot} */
   root.host) {
@@ -399,8 +391,7 @@ function detach(node) {
 }
 function destroy_each(iterations, detaching) {
   for (let i = 0; i < iterations.length; i += 1) {
-    if (iterations[i])
-      iterations[i].d(detaching);
+    if (iterations[i]) iterations[i].d(detaching);
   }
 }
 function element(name) {
@@ -423,18 +414,15 @@ function listen(node, event, handler, options) {
   return () => node.removeEventListener(event, handler, options);
 }
 function attr(node, attribute, value) {
-  if (value == null)
-    node.removeAttribute(attribute);
-  else if (node.getAttribute(attribute) !== value)
-    node.setAttribute(attribute, value);
+  if (value == null) node.removeAttribute(attribute);
+  else if (node.getAttribute(attribute) !== value) node.setAttribute(attribute, value);
 }
 function children(element2) {
   return Array.from(element2.childNodes);
 }
 function set_data(text2, data) {
   data = "" + data;
-  if (text2.data === data)
-    return;
+  if (text2.data === data) return;
   text2.data = /** @type {string} */
   data;
 }
@@ -468,8 +456,7 @@ var active = 0;
 function hash(str) {
   let hash2 = 5381;
   let i = str.length;
-  while (i--)
-    hash2 = (hash2 << 5) - hash2 ^ str.charCodeAt(i);
+  while (i--) hash2 = (hash2 << 5) - hash2 ^ str.charCodeAt(i);
   return hash2 >>> 0;
 }
 function create_style_information(doc, node) {
@@ -509,18 +496,15 @@ function delete_rule(node, name) {
   if (deleted) {
     node.style.animation = next.join(", ");
     active -= deleted;
-    if (!active)
-      clear_rules();
+    if (!active) clear_rules();
   }
 }
 function clear_rules() {
   raf(() => {
-    if (active)
-      return;
+    if (active) return;
     managed_styles.forEach((info) => {
       const { ownerNode } = info.stylesheet;
-      if (ownerNode)
-        detach(ownerNode);
+      if (ownerNode) detach(ownerNode);
     });
     managed_styles.clear();
   });
@@ -532,8 +516,7 @@ function set_current_component(component) {
   current_component = component;
 }
 function get_current_component() {
-  if (!current_component)
-    throw new Error("Function called outside component initialization");
+  if (!current_component) throw new Error("Function called outside component initialization");
   return current_component;
 }
 function createEventDispatcher() {
@@ -598,8 +581,7 @@ function flush() {
     set_current_component(null);
     dirty_components.length = 0;
     flushidx = 0;
-    while (binding_callbacks.length)
-      binding_callbacks.pop()();
+    while (binding_callbacks.length) binding_callbacks.pop()();
     for (let i = 0; i < render_callbacks.length; i += 1) {
       const callback = render_callbacks[i];
       if (!seen_callbacks.has(callback)) {
@@ -672,14 +654,12 @@ function transition_in(block, local) {
 }
 function transition_out(block, local, detach2, callback) {
   if (block && block.o) {
-    if (outroing.has(block))
-      return;
+    if (outroing.has(block)) return;
     outroing.add(block);
     outros.c.push(() => {
       outroing.delete(block);
       if (callback) {
-        if (detach2)
-          block.d(1);
+        if (detach2) block.d(1);
         callback();
       }
     });
@@ -698,8 +678,7 @@ function create_bidirectional_transition(node, fn, params, intro) {
   let animation_name = null;
   let original_inert_value;
   function clear_animation() {
-    if (animation_name)
-      delete_rule(node, animation_name);
+    if (animation_name) delete_rule(node, animation_name);
   }
   function init2(program, duration) {
     const d = (
@@ -751,8 +730,7 @@ function create_bidirectional_transition(node, fn, params, intro) {
         clear_animation();
         animation_name = create_rule(node, t, b, duration, delay, easing, css);
       }
-      if (b)
-        tick2(0, 1);
+      if (b) tick2(0, 1);
       running_program = init2(program, duration);
       add_render_callback(() => dispatch(node, b, "start"));
       loop((now2) => {
@@ -781,8 +759,7 @@ function create_bidirectional_transition(node, fn, params, intro) {
               if (running_program.b) {
                 clear_animation();
               } else {
-                if (!--running_program.group.r)
-                  run_all(running_program.group.c);
+                if (!--running_program.group.r) run_all(running_program.group.c);
               }
             }
             running_program = null;
@@ -925,10 +902,8 @@ function init(component, options, instance4, create_fragment4, not_equal, props,
   $$.ctx = instance4 ? instance4(component, options.props || {}, (i, ret, ...rest) => {
     const value = rest.length ? rest[0] : ret;
     if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
-      if (!$$.skip_bound && $$.bound[i])
-        $$.bound[i](value);
-      if (ready)
-        make_dirty(component, i);
+      if (!$$.skip_bound && $$.bound[i]) $$.bound[i](value);
+      if (ready) make_dirty(component, i);
     }
     return ret;
   }) : [];
@@ -945,8 +920,7 @@ function init(component, options, instance4, create_fragment4, not_equal, props,
     } else {
       $$.fragment && $$.fragment.c();
     }
-    if (options.intro)
-      transition_in(component.$$.fragment);
+    if (options.intro) transition_in(component.$$.fragment);
     mount_component(component, options.target, options.anchor);
     end_hydrating();
     flush();
@@ -1104,8 +1078,7 @@ if (typeof HTMLElement === "function") {
     // and setting attributes through setAttribute etc, this is helpful
     attributeChangedCallback(attr2, _oldValue, newValue) {
       var _a;
-      if (this.$$r)
-        return;
+      if (this.$$r) return;
       attr2 = this.$$g_p(attr2);
       this.$$d[attr2] = get_custom_element_value(attr2, newValue, this.$$p_d, "toProp");
       (_a = this.$$c) == null ? void 0 : _a.$set({ [attr2]: this.$$d[attr2] });
@@ -1151,6 +1124,7 @@ function get_custom_element_value(prop, value, props_definition, transform) {
         return value && JSON.parse(value);
       case "Boolean":
         return value;
+      // conversion already handled above
       case "Number":
         return value != null ? +value : value;
       default:
@@ -1196,8 +1170,7 @@ var SvelteComponent = class {
     callbacks.push(callback);
     return () => {
       const index = callbacks.indexOf(callback);
-      if (index !== -1)
-        callbacks.splice(index, 1);
+      if (index !== -1) callbacks.splice(index, 1);
     };
   }
   /**
@@ -1324,8 +1297,9 @@ function getEditorContext(app) {
 }
 
 // src/commands/prompting.ts
-function generateSearchQueryMessages(context, userPrompt) {
-  var _a, _b;
+function generateSearchQueryMessages(context, userPrompt, scope) {
+  var _a, _b, _c;
+  const includeNoteContext = scope !== "vault";
   return [
     {
       role: "system",
@@ -1336,10 +1310,10 @@ function generateSearchQueryMessages(context, userPrompt) {
       content: `User Prompt: ${userPrompt || "None"}
 
 Selected Text (Context):
-${((_a = context == null ? void 0 : context.selection) == null ? void 0 : _a.text) ? context.selection.text.slice(0, 500) : "None"}
+${includeNoteContext && ((_a = context == null ? void 0 : context.selection) == null ? void 0 : _a.text) ? context.selection.text.slice(0, 500) : "None"}
 
 Full Note Title:
-${((_b = context == null ? void 0 : context.note) == null ? void 0 : _b.title) || "None"}`
+${includeNoteContext && ((_b = context == null ? void 0 : context.note) == null ? void 0 : _b.title) ? (_c = context.note) == null ? void 0 : _c.title : "None"}`
     }
   ];
 }
@@ -1461,8 +1435,7 @@ function createNdjsonParser(onEvent) {
     const lines = buffer.split("\n");
     buffer = lines.pop() || "";
     for (const line of lines) {
-      if (!line.trim())
-        continue;
+      if (!line.trim()) continue;
       try {
         const data = JSON.parse(line);
         if (data.done) {
@@ -1530,8 +1503,7 @@ function createSseParser(onEvent) {
     buffer = lines.pop() || "";
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed.startsWith("data:"))
-        continue;
+      if (!trimmed.startsWith("data:")) continue;
       const dataStr = trimmed.slice(5).trim();
       if (dataStr === "[DONE]") {
         onEvent({ type: "done" });
@@ -1725,8 +1697,7 @@ function create_if_block_9(ctx) {
       div1 = element("div");
       div0 = element("div");
       t = space();
-      if (if_block)
-        if_block.c();
+      if (if_block) if_block.c();
       attr(div0, "class", "markdown-preview select-text helper-render");
       attr(div1, "class", "prose prose-sm prose-invert max-w-none break-words");
       attr(div2, "class", div2_class_value = "group relative max-w-[85%] rounded-2xl px-4 py-3 text-sm " + /*message*/
@@ -1740,8 +1711,7 @@ function create_if_block_9(ctx) {
       append(div2, div1);
       append(div1, div0);
       append(div2, t);
-      if (if_block)
-        if_block.m(div2, null);
+      if (if_block) if_block.m(div2, null);
       current = true;
       if (!mounted) {
         dispose = action_destroyer(markdown_action = /*markdown*/
@@ -1766,21 +1736,20 @@ function create_if_block_9(ctx) {
     p(new_ctx, dirty) {
       ctx = new_ctx;
       if (markdown_action && is_function(markdown_action.update) && dirty[0] & /*messages*/
-      2)
-        markdown_action.update.call(
-          null,
-          /*message*/
-          ctx[34].role === "assistant" ? (
-            /*cleanAssistantMessage*/
-            ctx[18](
-              /*message*/
-              ctx[34].content
-            )
-          ) : (
+      2) markdown_action.update.call(
+        null,
+        /*message*/
+        ctx[34].role === "assistant" ? (
+          /*cleanAssistantMessage*/
+          ctx[18](
             /*message*/
             ctx[34].content
           )
-        );
+        ) : (
+          /*message*/
+          ctx[34].content
+        )
+      );
       if (
         /*message*/
         ctx[34].role === "assistant"
@@ -1808,14 +1777,11 @@ function create_if_block_9(ctx) {
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       if (local) {
         add_render_callback(() => {
-          if (!current)
-            return;
-          if (!div3_transition)
-            div3_transition = create_bidirectional_transition(div3, fade, { duration: 150 }, true);
+          if (!current) return;
+          if (!div3_transition) div3_transition = create_bidirectional_transition(div3, fade, { duration: 150 }, true);
           div3_transition.run(1);
         });
       }
@@ -1823,8 +1789,7 @@ function create_if_block_9(ctx) {
     },
     o(local) {
       if (local) {
-        if (!div3_transition)
-          div3_transition = create_bidirectional_transition(div3, fade, { duration: 150 }, false);
+        if (!div3_transition) div3_transition = create_bidirectional_transition(div3, fade, { duration: 150 }, false);
         div3_transition.run(0);
       }
       current = false;
@@ -1833,10 +1798,8 @@ function create_if_block_9(ctx) {
       if (detaching) {
         detach(div3);
       }
-      if (if_block)
-        if_block.d();
-      if (detaching && div3_transition)
-        div3_transition.end();
+      if (if_block) if_block.d();
+      if (detaching && div3_transition) div3_transition.end();
       mounted = false;
       dispose();
     }
@@ -1857,8 +1820,7 @@ function create_if_block_10(ctx) {
       /*copiedMessageIndex*/
       ctx2[8] === /*index*/
       ctx2[36]
-    )
-      return create_if_block_15;
+    ) return create_if_block_15;
     return create_else_block_5;
   }
   let current_block_type = select_block_type(ctx, [-1, -1]);
@@ -1888,11 +1850,9 @@ function create_if_block_10(ctx) {
       button = element("button");
       if_block0.c();
       t0 = space();
-      if (if_block1)
-        if_block1.c();
+      if (if_block1) if_block1.c();
       t1 = space();
-      if (if_block2)
-        if_block2.c();
+      if (if_block2) if_block2.c();
       attr(button, "class", button_class_value = "p-1.5 rounded-md hover:bg-background/20 transition-colors " + /*copiedMessageIndex*/
       (ctx[8] === /*index*/
       ctx[36] ? "text-primary" : "text-muted-foreground hover:text-foreground"));
@@ -1906,11 +1866,9 @@ function create_if_block_10(ctx) {
       append(div, button);
       if_block0.m(button, null);
       append(div, t0);
-      if (if_block1)
-        if_block1.m(div, null);
+      if (if_block1) if_block1.m(div, null);
       append(div, t1);
-      if (if_block2)
-        if_block2.m(div, null);
+      if (if_block2) if_block2.m(div, null);
       if (!mounted) {
         dispose = listen(button, "click", click_handler);
         mounted = true;
@@ -1975,10 +1933,8 @@ function create_if_block_10(ctx) {
         detach(div);
       }
       if_block0.d();
-      if (if_block1)
-        if_block1.d();
-      if (if_block2)
-        if_block2.d();
+      if (if_block1) if_block1.d();
+      if (if_block2) if_block2.d();
       mounted = false;
       dispose();
     }
@@ -2062,8 +2018,7 @@ function create_if_block_13(ctx) {
       /*replacedMessageIndex*/
       ctx2[9] === /*index*/
       ctx2[36]
-    )
-      return create_if_block_14;
+    ) return create_if_block_14;
     return create_else_block_4;
   }
   let current_block_type = select_block_type_1(ctx, [-1, -1]);
@@ -2204,8 +2159,7 @@ function create_if_block_11(ctx) {
       /*createdNoteIndex*/
       ctx2[10] === /*index*/
       ctx2[36]
-    )
-      return create_if_block_12;
+    ) return create_if_block_12;
     return create_else_block_3;
   }
   let current_block_type = select_block_type_2(ctx, [-1, -1]);
@@ -2356,20 +2310,17 @@ function create_each_block_2(ctx) {
   let if_block = show_if && create_if_block_9(ctx);
   return {
     c() {
-      if (if_block)
-        if_block.c();
+      if (if_block) if_block.c();
       if_block_anchor = empty();
     },
     m(target, anchor) {
-      if (if_block)
-        if_block.m(target, anchor);
+      if (if_block) if_block.m(target, anchor);
       insert(target, if_block_anchor, anchor);
     },
     p(ctx2, dirty) {
       if (dirty[0] & /*messages*/
-      2)
-        show_if = !/*message*/
-        ctx2[34].content.trim().startsWith("<obsidian_command>");
+      2) show_if = !/*message*/
+      ctx2[34].content.trim().startsWith("<obsidian_command>");
       if (show_if) {
         if (if_block) {
           if_block.p(ctx2, dirty);
@@ -2395,8 +2346,7 @@ function create_each_block_2(ctx) {
       if (detaching) {
         detach(if_block_anchor);
       }
-      if (if_block)
-        if_block.d(detaching);
+      if (if_block) if_block.d(detaching);
     }
   };
 }
@@ -2412,8 +2362,7 @@ function create_if_block_3(ctx) {
     if (
       /*status*/
       ctx2[2] === "searching"
-    )
-      return create_if_block_8;
+    ) return create_if_block_8;
     return create_else_block_2;
   }
   let current_block_type = select_block_type_3(ctx, [-1, -1]);
@@ -2435,11 +2384,9 @@ function create_if_block_3(ctx) {
       div0 = element("div");
       if_block0.c();
       t0 = space();
-      if (if_block1)
-        if_block1.c();
+      if (if_block1) if_block1.c();
       t1 = space();
-      if (if_block2)
-        if_block2.c();
+      if (if_block2) if_block2.c();
       attr(div0, "class", "flex items-center gap-2 mb-2");
       attr(div1, "class", "max-w-[90%] rounded-2xl rounded-tl-sm px-4 py-3 bg-muted/30 text-xs border border-border/40");
       attr(div2, "class", "flex w-full justify-start");
@@ -2450,11 +2397,9 @@ function create_if_block_3(ctx) {
       append(div1, div0);
       if_block0.m(div0, null);
       append(div1, t0);
-      if (if_block1)
-        if_block1.m(div1, null);
+      if (if_block1) if_block1.m(div1, null);
       append(div1, t1);
-      if (if_block2)
-        if_block2.m(div1, null);
+      if (if_block2) if_block2.m(div1, null);
       current = true;
     },
     p(ctx2, dirty) {
@@ -2502,14 +2447,11 @@ function create_if_block_3(ctx) {
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       if (local) {
         add_render_callback(() => {
-          if (!current)
-            return;
-          if (!div2_transition)
-            div2_transition = create_bidirectional_transition(div2, fade, {}, true);
+          if (!current) return;
+          if (!div2_transition) div2_transition = create_bidirectional_transition(div2, fade, {}, true);
           div2_transition.run(1);
         });
       }
@@ -2517,8 +2459,7 @@ function create_if_block_3(ctx) {
     },
     o(local) {
       if (local) {
-        if (!div2_transition)
-          div2_transition = create_bidirectional_transition(div2, fade, {}, false);
+        if (!div2_transition) div2_transition = create_bidirectional_transition(div2, fade, {}, false);
         div2_transition.run(0);
       }
       current = false;
@@ -2528,12 +2469,9 @@ function create_if_block_3(ctx) {
         detach(div2);
       }
       if_block0.d();
-      if (if_block1)
-        if_block1.d();
-      if (if_block2)
-        if_block2.d();
-      if (detaching && div2_transition)
-        div2_transition.end();
+      if (if_block1) if_block1.d();
+      if (if_block2) if_block2.d();
+      if (detaching && div2_transition) div2_transition.end();
     }
   };
 }
@@ -2624,8 +2562,7 @@ function create_if_block_8(ctx) {
     p(ctx2, dirty) {
       if (dirty[0] & /*searchStatus*/
       32 && t1_value !== (t1_value = /*searchStatus*/
-      (ctx2[5] || "Searching...") + ""))
-        set_data(t1, t1_value);
+      (ctx2[5] || "Searching...") + "")) set_data(t1, t1_value);
     },
     d(detaching) {
       if (detaching) {
@@ -2742,8 +2679,7 @@ function create_each_block_1(ctx) {
     p(ctx2, dirty) {
       if (dirty[0] & /*searchQueries*/
       64 && t1_value !== (t1_value = /*query*/
-      ctx2[31] + ""))
-        set_data(t1, t1_value);
+      ctx2[31] + "")) set_data(t1, t1_value);
     },
     d(detaching) {
       if (detaching) {
@@ -2776,8 +2712,7 @@ function create_if_block_4(ctx) {
         each_blocks[i].c();
       }
       t = space();
-      if (if_block)
-        if_block.c();
+      if (if_block) if_block.c();
       attr(div0, "class", "flex flex-wrap gap-2");
       attr(div1, "class", "space-y-2 pt-1");
     },
@@ -2790,8 +2725,7 @@ function create_if_block_4(ctx) {
         }
       }
       append(div0, t);
-      if (if_block)
-        if_block.m(div0, null);
+      if (if_block) if_block.m(div0, null);
     },
     p(ctx2, dirty) {
       if (dirty[0] & /*webSearchResults*/
@@ -2837,8 +2771,7 @@ function create_if_block_4(ctx) {
         detach(div1);
       }
       destroy_each(each_blocks, detaching);
-      if (if_block)
-        if_block.d();
+      if (if_block) if_block.d();
     }
   };
 }
@@ -2917,13 +2850,10 @@ function create_each_block(ctx) {
   let a_href_value;
   function select_block_type_4(ctx2, dirty) {
     if (dirty[0] & /*webSearchResults*/
-    128)
-      show_if = null;
-    if (show_if == null)
-      show_if = !!/*result*/
-      ctx2[28].url.includes("github.com");
-    if (show_if)
-      return create_if_block_6;
+    128) show_if = null;
+    if (show_if == null) show_if = !!/*result*/
+    ctx2[28].url.includes("github.com");
+    if (show_if) return create_if_block_6;
     return create_else_block_1;
   }
   let current_block_type = select_block_type_4(ctx, [-1, -1]);
@@ -2963,8 +2893,7 @@ function create_each_block(ctx) {
       }
       if (dirty[0] & /*webSearchResults*/
       128 && t1_value !== (t1_value = /*result*/
-      ctx2[28].title + ""))
-        set_data(t1, t1_value);
+      ctx2[28].title + "")) set_data(t1, t1_value);
       if (dirty[0] & /*webSearchResults*/
       128 && a_href_value !== (a_href_value = /*result*/
       ctx2[28].url)) {
@@ -3005,8 +2934,7 @@ function create_if_block_5(ctx) {
     p(ctx2, dirty) {
       if (dirty[0] & /*webSearchResults*/
       128 && t1_value !== (t1_value = /*webSearchResults*/
-      ctx2[7].results.length - 5 + ""))
-        set_data(t1, t1_value);
+      ctx2[7].results.length - 5 + "")) set_data(t1, t1_value);
     },
     d(detaching) {
       if (detaching) {
@@ -3024,8 +2952,7 @@ function create_if_block_1(ctx) {
     if (
       /*displayResponse*/
       ctx2[11]
-    )
-      return create_if_block_2;
+    ) return create_if_block_2;
     return create_else_block;
   }
   let current_block_type = select_block_type_5(ctx, [-1, -1]);
@@ -3057,14 +2984,11 @@ function create_if_block_1(ctx) {
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       if (local) {
         add_render_callback(() => {
-          if (!current)
-            return;
-          if (!div1_transition)
-            div1_transition = create_bidirectional_transition(div1, fade, {}, true);
+          if (!current) return;
+          if (!div1_transition) div1_transition = create_bidirectional_transition(div1, fade, {}, true);
           div1_transition.run(1);
         });
       }
@@ -3072,8 +2996,7 @@ function create_if_block_1(ctx) {
     },
     o(local) {
       if (local) {
-        if (!div1_transition)
-          div1_transition = create_bidirectional_transition(div1, fade, {}, false);
+        if (!div1_transition) div1_transition = create_bidirectional_transition(div1, fade, {}, false);
         div1_transition.run(0);
       }
       current = false;
@@ -3083,8 +3006,7 @@ function create_if_block_1(ctx) {
         detach(div1);
       }
       if_block.d();
-      if (detaching && div1_transition)
-        div1_transition.end();
+      if (detaching && div1_transition) div1_transition.end();
     }
   };
 }
@@ -3137,8 +3059,7 @@ function create_else_block(ctx) {
     p(ctx2, dirty) {
       if (dirty[0] & /*status*/
       4 && t1_value !== (t1_value = /*status*/
-      ctx2[2] === "sending" ? "Preparing..." : "Generating..."))
-        set_data(t1, t1_value);
+      ctx2[2] === "sending" ? "Preparing..." : "Generating...")) set_data(t1, t1_value);
     },
     d(detaching) {
       if (detaching) {
@@ -3176,12 +3097,11 @@ function create_if_block_2(ctx) {
     },
     p(ctx2, dirty) {
       if (markdown_action && is_function(markdown_action.update) && dirty[0] & /*displayResponse*/
-      2048)
-        markdown_action.update.call(
-          null,
-          /*displayResponse*/
-          ctx2[11]
-        );
+      2048) markdown_action.update.call(
+        null,
+        /*displayResponse*/
+        ctx2[11]
+      );
     },
     d(detaching) {
       if (detaching) {
@@ -3272,11 +3192,9 @@ function create_fragment(ctx) {
         each_blocks[i].c();
       }
       t0 = space();
-      if (if_block0)
-        if_block0.c();
+      if (if_block0) if_block0.c();
       t1 = space();
-      if (if_block1)
-        if_block1.c();
+      if (if_block1) if_block1.c();
       t2 = space();
       div4 = element("div");
       div2 = element("div");
@@ -3289,8 +3207,7 @@ function create_fragment(ctx) {
       path0 = svg_element("path");
       path1 = svg_element("path");
       t4 = space();
-      if (if_block2)
-        if_block2.c();
+      if (if_block2) if_block2.c();
       t5 = space();
       button1 = element("button");
       svg1 = svg_element("svg");
@@ -3355,11 +3272,9 @@ function create_fragment(ctx) {
         }
       }
       append(div0, t0);
-      if (if_block0)
-        if_block0.m(div0, null);
+      if (if_block0) if_block0.m(div0, null);
       append(div0, t1);
-      if (if_block1)
-        if_block1.m(div0, null);
+      if (if_block1) if_block1.m(div0, null);
       append(div5, t2);
       append(div5, div4);
       append(div4, div2);
@@ -3377,8 +3292,7 @@ function create_fragment(ctx) {
       append(svg0, path0);
       append(svg0, path1);
       append(div1, t4);
-      if (if_block2)
-        if_block2.m(div1, null);
+      if (if_block2) if_block2.m(div1, null);
       append(div2, t5);
       append(div2, button1);
       append(button1, svg1);
@@ -3550,12 +3464,9 @@ function create_fragment(ctx) {
         detach(div5);
       }
       destroy_each(each_blocks, detaching);
-      if (if_block0)
-        if_block0.d();
-      if (if_block1)
-        if_block1.d();
-      if (if_block2)
-        if_block2.d();
+      if (if_block0) if_block0.d();
+      if (if_block1) if_block1.d();
+      if (if_block2) if_block2.d();
       mounted = false;
       run_all(dispose);
     }
@@ -3632,8 +3543,7 @@ function instance($$self, $$props, $$invalidate) {
     );
   }
   function cleanSourceTitleLinks(text2) {
-    if (!(webSearchResults === null || webSearchResults === void 0 ? void 0 : webSearchResults.results))
-      return text2;
+    if (!(webSearchResults === null || webSearchResults === void 0 ? void 0 : webSearchResults.results)) return text2;
     return text2.replace(/\[Source Title\]\(([^)]+)\)/gi, (match, url) => {
       const result = webSearchResults.results.find((r) => r.url === url || url.includes(r.url) || r.url.includes(url));
       if (result) {
@@ -3653,8 +3563,7 @@ function instance($$self, $$props, $$invalidate) {
     return cleaned;
   }
   function markdown(node, text2) {
-    if (!text2)
-      return;
+    if (!text2) return;
     node.empty();
     const component = new import_obsidian5.Component();
     import_obsidian5.MarkdownRenderer.render(plugin.app, text2, node, "", component);
@@ -3676,32 +3585,21 @@ function instance($$self, $$props, $$invalidate) {
     $$invalidate(0, userPrompt);
   }
   $$self.$$set = ($$props2) => {
-    if ("plugin" in $$props2)
-      $$invalidate(20, plugin = $$props2.plugin);
-    if ("messages" in $$props2)
-      $$invalidate(1, messages = $$props2.messages);
-    if ("currentResponse" in $$props2)
-      $$invalidate(21, currentResponse = $$props2.currentResponse);
-    if ("status" in $$props2)
-      $$invalidate(2, status = $$props2.status);
-    if ("userPrompt" in $$props2)
-      $$invalidate(0, userPrompt = $$props2.userPrompt);
-    if ("activeCommandId" in $$props2)
-      $$invalidate(3, activeCommandId = $$props2.activeCommandId);
-    if ("webSearchEnabled" in $$props2)
-      $$invalidate(4, webSearchEnabled = $$props2.webSearchEnabled);
-    if ("searchStatus" in $$props2)
-      $$invalidate(5, searchStatus = $$props2.searchStatus);
-    if ("searchQueries" in $$props2)
-      $$invalidate(6, searchQueries = $$props2.searchQueries);
-    if ("webSearchResults" in $$props2)
-      $$invalidate(7, webSearchResults = $$props2.webSearchResults);
+    if ("plugin" in $$props2) $$invalidate(20, plugin = $$props2.plugin);
+    if ("messages" in $$props2) $$invalidate(1, messages = $$props2.messages);
+    if ("currentResponse" in $$props2) $$invalidate(21, currentResponse = $$props2.currentResponse);
+    if ("status" in $$props2) $$invalidate(2, status = $$props2.status);
+    if ("userPrompt" in $$props2) $$invalidate(0, userPrompt = $$props2.userPrompt);
+    if ("activeCommandId" in $$props2) $$invalidate(3, activeCommandId = $$props2.activeCommandId);
+    if ("webSearchEnabled" in $$props2) $$invalidate(4, webSearchEnabled = $$props2.webSearchEnabled);
+    if ("searchStatus" in $$props2) $$invalidate(5, searchStatus = $$props2.searchStatus);
+    if ("searchQueries" in $$props2) $$invalidate(6, searchQueries = $$props2.searchQueries);
+    if ("webSearchResults" in $$props2) $$invalidate(7, webSearchResults = $$props2.webSearchResults);
   };
   $$self.$$.update = () => {
     if ($$self.$$.dirty[0] & /*currentResponse*/
     2097152) {
-      $:
-        $$invalidate(11, displayResponse = cleanAssistantMessage(currentResponse));
+      $: $$invalidate(11, displayResponse = cleanAssistantMessage(currentResponse));
     }
   };
   return [
@@ -3854,11 +3752,9 @@ function create_if_block2(ctx) {
       button2 = element("button");
       t7 = text("OpenAI");
       t8 = space();
-      if (if_block0)
-        if_block0.c();
+      if (if_block0) if_block0.c();
       t9 = space();
-      if (if_block1)
-        if_block1.c();
+      if (if_block1) if_block1.c();
       t10 = space();
       div9 = element("div");
       div8 = element("div");
@@ -3870,8 +3766,7 @@ function create_if_block2(ctx) {
       t15 = space();
       div6 = element("div");
       t16 = space();
-      if (if_block2)
-        if_block2.c();
+      if (if_block2) if_block2.c();
       t17 = space();
       div10 = element("div");
       div10.innerHTML = `<p class="text-[10px] text-muted-foreground/40 uppercase tracking-widest">AI Assistant v1.0</p>`;
@@ -3926,11 +3821,9 @@ function create_if_block2(ctx) {
       append(div1, button2);
       append(button2, t7);
       append(div3, t8);
-      if (if_block0)
-        if_block0.m(div3, null);
+      if (if_block0) if_block0.m(div3, null);
       append(div3, t9);
-      if (if_block1)
-        if_block1.m(div3, null);
+      if (if_block1) if_block1.m(div3, null);
       append(div11, t10);
       append(div11, div9);
       append(div9, div8);
@@ -3941,8 +3834,7 @@ function create_if_block2(ctx) {
       append(div7, t15);
       append(div7, div6);
       append(div9, t16);
-      if (if_block2)
-        if_block2.m(div9, null);
+      if (if_block2) if_block2.m(div9, null);
       append(div11, t17);
       append(div11, div10);
       if (!mounted) {
@@ -4050,12 +3942,9 @@ function create_if_block2(ctx) {
       if (detaching) {
         detach(div12);
       }
-      if (if_block0)
-        if_block0.d();
-      if (if_block1)
-        if_block1.d();
-      if (if_block2)
-        if_block2.d();
+      if (if_block0) if_block0.d();
+      if (if_block1) if_block1.d();
+      if (if_block2) if_block2.d();
       mounted = false;
       run_all(dispose);
     }
@@ -4105,8 +3994,7 @@ function create_if_block_52(ctx) {
       /*isFetching*/
       ctx2[2] && /*settings*/
       ctx2[1].activeProvider === "ollama"
-    )
-      return create_if_block_62;
+    ) return create_if_block_62;
     return create_else_block_12;
   }
   let current_block_type = select_block_type(ctx, -1);
@@ -4125,8 +4013,7 @@ function create_if_block_52(ctx) {
       div1 = element("div");
       div1.innerHTML = `<label class="text-xs font-medium text-muted-foreground">Model Name</label>`;
       t4 = space();
-      if (if_block0)
-        if_block0.c();
+      if (if_block0) if_block0.c();
       t5 = space();
       div2 = element("div");
       input1 = element("input");
@@ -4185,8 +4072,7 @@ function create_if_block_52(ctx) {
       append(div6, div3);
       append(div3, div1);
       append(div3, t4);
-      if (if_block0)
-        if_block0.m(div3, null);
+      if (if_block0) if_block0.m(div3, null);
       append(div3, t5);
       append(div3, div2);
       append(div2, input1);
@@ -4275,8 +4161,7 @@ function create_if_block_52(ctx) {
       }
       if (dirty & /*settings*/
       2 && t10_value !== (t10_value = /*settings*/
-      (((_d = (_c = ctx2[1].providers.ollama) == null ? void 0 : _c.temperature) == null ? void 0 : _d.toFixed(1)) || "0.7") + ""))
-        set_data(t10, t10_value);
+      (((_d = (_c = ctx2[1].providers.ollama) == null ? void 0 : _c.temperature) == null ? void 0 : _d.toFixed(1)) || "0.7") + "")) set_data(t10, t10_value);
       if (dirty & /*settings*/
       2 && input2_value_value !== (input2_value_value = /*settings*/
       ((_e = ctx2[1].providers.ollama) == null ? void 0 : _e.temperature) || 0.7)) {
@@ -4287,8 +4172,7 @@ function create_if_block_52(ctx) {
       if (detaching) {
         detach(div6);
       }
-      if (if_block0)
-        if_block0.d();
+      if (if_block0) if_block0.d();
       if_block1.d();
       mounted = false;
       run_all(dispose);
@@ -4316,12 +4200,11 @@ function create_if_block_72(ctx) {
     },
     p(ctx2, dirty) {
       if (dirty & /*fetchError*/
-      8)
-        set_data(
-          t1,
-          /*fetchError*/
-          ctx2[3]
-        );
+      8) set_data(
+        t1,
+        /*fetchError*/
+        ctx2[3]
+      );
     },
     d(detaching) {
       if (detaching) {
@@ -4464,8 +4347,7 @@ function create_if_block_22(ctx) {
       /*isFetching*/
       ctx2[2] && /*settings*/
       ctx2[1].activeProvider === "openai"
-    )
-      return create_if_block_32;
+    ) return create_if_block_32;
     return create_else_block2;
   }
   let current_block_type = select_block_type_1(ctx, -1);
@@ -4490,8 +4372,7 @@ function create_if_block_22(ctx) {
       div2 = element("div");
       div2.innerHTML = `<label class="text-xs font-medium text-muted-foreground">Model Name</label>`;
       t7 = space();
-      if (if_block0)
-        if_block0.c();
+      if (if_block0) if_block0.c();
       t8 = space();
       div3 = element("div");
       input2 = element("input");
@@ -4562,8 +4443,7 @@ function create_if_block_22(ctx) {
       append(div7, div4);
       append(div4, div2);
       append(div4, t7);
-      if (if_block0)
-        if_block0.m(div4, null);
+      if (if_block0) if_block0.m(div4, null);
       append(div4, t8);
       append(div4, div3);
       append(div3, input2);
@@ -4663,8 +4543,7 @@ function create_if_block_22(ctx) {
       }
       if (dirty & /*settings*/
       2 && t13_value !== (t13_value = /*settings*/
-      (((_e = (_d = ctx2[1].providers.openai) == null ? void 0 : _d.temperature) == null ? void 0 : _e.toFixed(1)) || "0.7") + ""))
-        set_data(t13, t13_value);
+      (((_e = (_d = ctx2[1].providers.openai) == null ? void 0 : _d.temperature) == null ? void 0 : _e.toFixed(1)) || "0.7") + "")) set_data(t13, t13_value);
       if (dirty & /*settings*/
       2 && input3_value_value !== (input3_value_value = /*settings*/
       ((_f = ctx2[1].providers.openai) == null ? void 0 : _f.temperature) || 0.7)) {
@@ -4675,8 +4554,7 @@ function create_if_block_22(ctx) {
       if (detaching) {
         detach(div7);
       }
-      if (if_block0)
-        if_block0.d();
+      if (if_block0) if_block0.d();
       if_block1.d();
       mounted = false;
       run_all(dispose);
@@ -4704,12 +4582,11 @@ function create_if_block_42(ctx) {
     },
     p(ctx2, dirty) {
       if (dirty & /*fetchError*/
-      8)
-        set_data(
-          t1,
-          /*fetchError*/
-          ctx2[3]
-        );
+      8) set_data(
+        t1,
+        /*fetchError*/
+        ctx2[3]
+      );
     },
     d(detaching) {
       if (detaching) {
@@ -4886,13 +4763,11 @@ function create_fragment2(ctx) {
   );
   return {
     c() {
-      if (if_block)
-        if_block.c();
+      if (if_block) if_block.c();
       if_block_anchor = empty();
     },
     m(target, anchor) {
-      if (if_block)
-        if_block.m(target, anchor);
+      if (if_block) if_block.m(target, anchor);
       insert(target, if_block_anchor, anchor);
     },
     p(ctx2, [dirty]) {
@@ -4918,8 +4793,7 @@ function create_fragment2(ctx) {
       if (detaching) {
         detach(if_block_anchor);
       }
-      if (if_block)
-        if_block.d(detaching);
+      if (if_block) if_block.d(detaching);
     }
   };
 }
@@ -4934,8 +4808,7 @@ function instance2($$self, $$props, $$invalidate) {
     $$invalidate(0, open = false);
   }
   async function openModelSelector(provider) {
-    if (isFetching)
-      return;
+    if (isFetching) return;
     await fetchModels(provider);
     if (availableModels.length > 0) {
       new ModelPickerModal(
@@ -5007,10 +4880,8 @@ function instance2($$self, $$props, $$invalidate) {
   }
   const input_handler_7 = () => updateSetting("webSearch", settings.webSearch);
   $$self.$$set = ($$props2) => {
-    if ("open" in $$props2)
-      $$invalidate(0, open = $$props2.open);
-    if ("plugin" in $$props2)
-      $$invalidate(8, plugin = $$props2.plugin);
+    if ("open" in $$props2) $$invalidate(0, open = $$props2.open);
+    if ("plugin" in $$props2) $$invalidate(8, plugin = $$props2.plugin);
   };
   return [
     open,
@@ -5057,8 +4928,7 @@ function create_if_block_33(ctx) {
     if (
       /*conversationSaved*/
       ctx2[11]
-    )
-      return create_if_block_43;
+    ) return create_if_block_43;
     return create_else_block3;
   }
   let current_block_type = select_block_type(ctx, [-1, -1]);
@@ -5277,22 +5147,18 @@ function create_if_block_17(ctx) {
     },
     p(ctx2, dirty) {
       if (!current || dirty[0] & /*error*/
-      128)
-        set_data(
-          t0,
-          /*error*/
-          ctx2[7]
-        );
+      128) set_data(
+        t0,
+        /*error*/
+        ctx2[7]
+      );
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       if (local) {
         add_render_callback(() => {
-          if (!current)
-            return;
-          if (!div1_transition)
-            div1_transition = create_bidirectional_transition(div1, slide, {}, true);
+          if (!current) return;
+          if (!div1_transition) div1_transition = create_bidirectional_transition(div1, slide, {}, true);
           div1_transition.run(1);
         });
       }
@@ -5300,8 +5166,7 @@ function create_if_block_17(ctx) {
     },
     o(local) {
       if (local) {
-        if (!div1_transition)
-          div1_transition = create_bidirectional_transition(div1, slide, {}, false);
+        if (!div1_transition) div1_transition = create_bidirectional_transition(div1, slide, {}, false);
         div1_transition.run(0);
       }
       current = false;
@@ -5310,8 +5175,7 @@ function create_if_block_17(ctx) {
       if (detaching) {
         detach(div1);
       }
-      if (detaching && div1_transition)
-        div1_transition.end();
+      if (detaching && div1_transition) div1_transition.end();
       mounted = false;
       dispose();
     }
@@ -5508,23 +5372,19 @@ function create_fragment3(ctx) {
       span2.textContent = "\u25BC";
       t5 = space();
       div0 = element("div");
-      if (if_block0)
-        if_block0.c();
+      if (if_block0) if_block0.c();
       t6 = space();
-      if (if_block1)
-        if_block1.c();
+      if (if_block1) if_block1.c();
       t7 = space();
       button1 = element("button");
       button1.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
       t8 = space();
       div3 = element("div");
-      if (if_block2)
-        if_block2.c();
+      if (if_block2) if_block2.c();
       t9 = space();
       create_component(chatview.$$.fragment);
       t10 = space();
-      if (if_block3)
-        if_block3.c();
+      if (if_block3) if_block3.c();
       t11 = space();
       create_component(settingsdrawer.$$.fragment);
       attr(span0, "class", "text-primary");
@@ -5552,22 +5412,18 @@ function create_fragment3(ctx) {
       append(button0, span2);
       append(div1, t5);
       append(div1, div0);
-      if (if_block0)
-        if_block0.m(div0, null);
+      if (if_block0) if_block0.m(div0, null);
       append(div0, t6);
-      if (if_block1)
-        if_block1.m(div0, null);
+      if (if_block1) if_block1.m(div0, null);
       append(div0, t7);
       append(div0, button1);
       append(div4, t8);
       append(div4, div3);
-      if (if_block2)
-        if_block2.m(div3, null);
+      if (if_block2) if_block2.m(div3, null);
       append(div3, t9);
       mount_component(chatview, div3, null);
       append(div3, t10);
-      if (if_block3)
-        if_block3.m(div3, null);
+      if (if_block3) if_block3.m(div3, null);
       append(div4, t11);
       mount_component(settingsdrawer, div4, null);
       current = true;
@@ -5595,8 +5451,7 @@ function create_fragment3(ctx) {
       (ctx2[13] ? (
         /*activeCommand*/
         ctx2[13].title
-      ) : "Pick a command...") + ""))
-        set_data(t2, t2_value);
+      ) : "Pick a command...") + "")) set_data(t2, t2_value);
       if (
         /*messages*/
         ctx2[4].length > 0 && /*activeCommandId*/
@@ -5653,41 +5508,32 @@ function create_fragment3(ctx) {
       }
       const chatview_changes = {};
       if (dirty[0] & /*plugin*/
-      1)
-        chatview_changes.plugin = /*plugin*/
-        ctx2[0];
+      1) chatview_changes.plugin = /*plugin*/
+      ctx2[0];
       if (dirty[0] & /*messages*/
-      16)
-        chatview_changes.messages = /*messages*/
-        ctx2[4];
+      16) chatview_changes.messages = /*messages*/
+      ctx2[4];
       if (dirty[0] & /*currentResponse*/
-      32)
-        chatview_changes.currentResponse = /*currentResponse*/
-        ctx2[5];
+      32) chatview_changes.currentResponse = /*currentResponse*/
+      ctx2[5];
       if (dirty[0] & /*status*/
-      4)
-        chatview_changes.status = /*status*/
-        ctx2[2];
+      4) chatview_changes.status = /*status*/
+      ctx2[2];
       if (dirty[0] & /*webSearchEnabled*/
-      4096)
-        chatview_changes.webSearchEnabled = /*webSearchEnabled*/
-        ctx2[12];
+      4096) chatview_changes.webSearchEnabled = /*webSearchEnabled*/
+      ctx2[12];
       if (dirty[0] & /*searchStatus*/
-      256)
-        chatview_changes.searchStatus = /*searchStatus*/
-        ctx2[8];
+      256) chatview_changes.searchStatus = /*searchStatus*/
+      ctx2[8];
       if (dirty[0] & /*searchQueries*/
-      512)
-        chatview_changes.searchQueries = /*searchQueries*/
-        ctx2[9];
+      512) chatview_changes.searchQueries = /*searchQueries*/
+      ctx2[9];
       if (dirty[0] & /*webSearchResults*/
-      1024)
-        chatview_changes.webSearchResults = /*webSearchResults*/
-        ctx2[10];
+      1024) chatview_changes.webSearchResults = /*webSearchResults*/
+      ctx2[10];
       if (dirty[0] & /*activeCommandId*/
-      2)
-        chatview_changes.activeCommandId = /*activeCommandId*/
-        ctx2[1];
+      2) chatview_changes.activeCommandId = /*activeCommandId*/
+      ctx2[1];
       if (!updating_userPrompt && dirty[0] & /*userPrompt*/
       64) {
         updating_userPrompt = true;
@@ -5713,9 +5559,8 @@ function create_fragment3(ctx) {
       }
       const settingsdrawer_changes = {};
       if (dirty[0] & /*plugin*/
-      1)
-        settingsdrawer_changes.plugin = /*plugin*/
-        ctx2[0];
+      1) settingsdrawer_changes.plugin = /*plugin*/
+      ctx2[0];
       if (!updating_open && dirty[0] & /*settingsOpen*/
       8) {
         updating_open = true;
@@ -5726,8 +5571,7 @@ function create_fragment3(ctx) {
       settingsdrawer.$set(settingsdrawer_changes);
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       transition_in(if_block2);
       transition_in(chatview.$$.fragment, local);
       transition_in(settingsdrawer.$$.fragment, local);
@@ -5743,15 +5587,11 @@ function create_fragment3(ctx) {
       if (detaching) {
         detach(div4);
       }
-      if (if_block0)
-        if_block0.d();
-      if (if_block1)
-        if_block1.d();
-      if (if_block2)
-        if_block2.d();
+      if (if_block0) if_block0.d();
+      if (if_block1) if_block1.d();
+      if (if_block2) if_block2.d();
       destroy_component(chatview);
-      if (if_block3)
-        if_block3.d();
+      if (if_block3) if_block3.d();
       destroy_component(settingsdrawer);
       mounted = false;
       run_all(dispose);
@@ -5820,11 +5660,9 @@ function instance3($$self, $$props, $$invalidate) {
     plugin.saveSettings();
   }
   function loadHistory() {
-    if (!activeCommandId)
-      return;
+    if (!activeCommandId) return;
     const command = COMMANDS.find((c) => c.id === activeCommandId);
-    if (!command)
-      return;
+    if (!command) return;
     if (command.scope === "note" || command.scope === "vault") {
       const context = getEditorContext(plugin.app);
       if (context) {
@@ -5842,8 +5680,7 @@ function instance3($$self, $$props, $$invalidate) {
   }
   async function runCommand() {
     var _a;
-    if (status !== "sending" || !activeCommandId)
-      return;
+    if (status !== "sending" || !activeCommandId) return;
     const command = COMMANDS.find((c) => c.id === activeCommandId);
     if (!command) {
       $$invalidate(7, error = "Command not found");
@@ -5909,7 +5746,7 @@ function instance3($$self, $$props, $$invalidate) {
         try {
           const providerSettings2 = plugin.settings.providers[plugin.settings.activeProvider];
           const client2 = createProviderClient(plugin.settings.activeProvider, providerSettings2);
-          const queryMessages = generateSearchQueryMessages(context, userPrompt);
+          const queryMessages = generateSearchQueryMessages(context, userPrompt, command.scope);
           let refinedQuery = "";
           const refineResponse = await client2.chat(
             {
@@ -5920,8 +5757,7 @@ function instance3($$self, $$props, $$invalidate) {
               stream: false
             },
             (event) => {
-              if (event.type === "token")
-                refinedQuery += event.value;
+              if (event.type === "token") refinedQuery += event.value;
             },
             abortController.signal
           );
@@ -6027,10 +5863,8 @@ function instance3($$self, $$props, $$invalidate) {
       }
       $$invalidate(5, currentResponse = "");
       let msg = err.message || "";
-      if (err.code)
-        msg += ` ${err.code}`;
-      if (!msg && typeof err === "string")
-        msg = err;
+      if (err.code) msg += ` ${err.code}`;
+      if (!msg && typeof err === "string") msg = err;
       let friendlyMessage = "An unexpected error occurred.";
       const streamMatch = msg.match(/Stream failed: (\d+) ([\s\S]*)/);
       if (streamMatch) {
@@ -6097,8 +5931,7 @@ function instance3($$self, $$props, $$invalidate) {
   }
   function handleCommandSelect(commandId) {
     const command = COMMANDS.find((c) => c.id === commandId);
-    if (!command)
-      return;
+    if (!command) return;
     $$invalidate(1, activeCommandId = commandId);
     $$invalidate(4, messages = []);
     $$invalidate(5, currentResponse = "");
@@ -6173,14 +6006,30 @@ function instance3($$self, $$props, $$invalidate) {
     let cleanContent = stripThinkingTags2(content);
     cleanContent = cleanContent.replace(/^##?\s*(Answer|Response|Reply):?\s*\n+/i, "").replace(/^(Certainly!?|Sure!?|Of course!?|Here('s| is| are))[^\n]*\n+/i, "").replace(/^(Below is|Here's|The following)[^\n]*:\n+/i, "").trim();
     let researchTitle = "";
-    const h1Match = cleanContent.match(/^#\s+([^\n]+)/);
+    let h1Match = cleanContent.match(/^#\s+([^\n]+)/);
     if (h1Match) {
       researchTitle = h1Match[1].trim();
-      cleanContent = cleanContent.replace(/^#\s+[^\n]+\n+/, "");
+      cleanContent = cleanContent.replace(/^#\s+[^\n]+\n*/, "").trim();
     } else {
-      const firstUserMsg = messages.find((m) => m.role === "user" && !isObsidianCommandMessage(m.content));
-      if (firstUserMsg) {
-        researchTitle = firstUserMsg.content.split("\n")[0].slice(0, 80);
+      h1Match = cleanContent.match(/^#\s+([^\n]+)/m);
+      if (h1Match) {
+        researchTitle = h1Match[1].trim();
+        cleanContent = cleanContent.replace(/^#\s+[^\n]+\n*/m, "").trim();
+      }
+    }
+    if (!researchTitle) {
+      const firstCommandMsg = messages.find((m) => m.role === "user" && isObsidianCommandMessage(m.content));
+      if (firstCommandMsg) {
+        try {
+          const jsonMatch = firstCommandMsg.content.match(/<obsidian_command>\s*([\s\S]*?)\s*<\/obsidian_command>/);
+          if (jsonMatch) {
+            const envelope = JSON.parse(jsonMatch[1]);
+            if (envelope.user_prompt) {
+              researchTitle = envelope.user_prompt.split("\n")[0].slice(0, 80);
+            }
+          }
+        } catch (_a) {
+        }
       }
     }
     let fileName = researchTitle.replace(/[\\/:*?"<>|]/g, "").replace(
@@ -6189,11 +6038,11 @@ function instance3($$self, $$props, $$invalidate) {
       // Normalize whitespace
     ).trim().slice(0, 100);
     if (!fileName) {
-      fileName = `Research ${new Date().toISOString().slice(0, 10)}`;
+      fileName = `Research ${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}`;
     }
     fileName += ".md";
     cleanContent = cleanReferenceMarkers(cleanContent, webSearchResults);
-    const date = new Date().toLocaleDateString("en-US", {
+    const date = (/* @__PURE__ */ new Date()).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric"
@@ -6229,8 +6078,7 @@ ${cleanContent}`;
     ).open();
   }
   async function handleSaveConversation() {
-    if (messages.length === 0)
-      return;
+    if (messages.length === 0) return;
     let noteTitle = "";
     const firstUserMsg = messages.find((m) => m.role === "user" && !isObsidianCommandMessage(m.content));
     const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant" && !isObsidianCommandMessage(m.content));
@@ -6244,7 +6092,7 @@ ${cleanContent}`;
       noteTitle = firstUserMsg.content.split("\n")[0].slice(0, 80);
     }
     if (!noteTitle) {
-      noteTitle = `Conversation ${new Date().toISOString().slice(0, 10)}`;
+      noteTitle = `Conversation ${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}`;
     }
     let fileName = noteTitle.replace(/[\\/:*?"<>|]/g, "").replace(
       /\s+/g,
@@ -6276,7 +6124,7 @@ ${cleanContent}`;
   }
   function formatConversationAsMarkdown(title) {
     const lines = [];
-    const date = new Date().toLocaleDateString("en-US", {
+    const date = (/* @__PURE__ */ new Date()).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric"
@@ -6296,8 +6144,7 @@ ${cleanContent}`;
       lines.push(content);
     } else {
       for (const msg of messages) {
-        if (isObsidianCommandMessage(msg.content))
-          continue;
+        if (isObsidianCommandMessage(msg.content)) continue;
         if (msg.role === "assistant") {
           let content = stripThinkingTags2(msg.content);
           content = cleanReferenceMarkers(content, webSearchResults);
@@ -6330,38 +6177,32 @@ ${cleanContent}`;
     $$invalidate(3, settingsOpen);
   }
   $$self.$$set = ($$props2) => {
-    if ("plugin" in $$props2)
-      $$invalidate(0, plugin = $$props2.plugin);
-    if ("initialCommandId" in $$props2)
-      $$invalidate(23, initialCommandId = $$props2.initialCommandId);
+    if ("plugin" in $$props2) $$invalidate(0, plugin = $$props2.plugin);
+    if ("initialCommandId" in $$props2) $$invalidate(23, initialCommandId = $$props2.initialCommandId);
   };
   $$self.$$.update = () => {
     if ($$self.$$.dirty[0] & /*initialCommandId*/
     8388608) {
-      $:
-        if (initialCommandId) {
-          handleCommandSelect(initialCommandId);
-          $$invalidate(23, initialCommandId = void 0);
-        }
+      $: if (initialCommandId) {
+        handleCommandSelect(initialCommandId);
+        $$invalidate(23, initialCommandId = void 0);
+      }
     }
     if ($$self.$$.dirty[0] & /*settingsOpen, plugin*/
     9) {
-      $:
-        if (!settingsOpen) {
-          $$invalidate(12, webSearchEnabled = plugin.settings.webSearch.enabled);
-        }
+      $: if (!settingsOpen) {
+        $$invalidate(12, webSearchEnabled = plugin.settings.webSearch.enabled);
+      }
     }
     if ($$self.$$.dirty[0] & /*activeCommandId*/
     2) {
-      $:
-        $$invalidate(13, activeCommand = COMMANDS.find((c) => c.id === activeCommandId));
+      $: $$invalidate(13, activeCommand = COMMANDS.find((c) => c.id === activeCommandId));
     }
     if ($$self.$$.dirty[0] & /*status*/
     4) {
-      $:
-        if (status === "sending") {
-          runCommand();
-        }
+      $: if (status === "sending") {
+        runCommand();
+      }
     }
   };
   return [

@@ -207,6 +207,7 @@
                     const queryMessages = generateSearchQueryMessages(
                         context!,
                         userPrompt,
+                        command.scope,
                     );
 
                     let refinedQuery = "";
@@ -680,22 +681,47 @@
             .replace(/^(Below is|Here's|The following)[^\n]*:\n+/i, "")
             .trim();
 
-        // Extract the research title from H1 heading or first user message
+        // Extract the research title from H1 heading or user's research prompt
         let researchTitle = "";
-        const h1Match = cleanContent.match(/^#\s+([^\n]+)/);
+
+        // First, try to match H1 at the very start of content
+        let h1Match = cleanContent.match(/^#\s+([^\n]+)/);
         if (h1Match) {
             researchTitle = h1Match[1].trim();
             // Remove the H1 heading from content since we'll add it properly
-            cleanContent = cleanContent.replace(/^#\s+[^\n]+\n+/, "");
+            cleanContent = cleanContent.replace(/^#\s+[^\n]+\n*/, "").trim();
         } else {
-            // Fallback: use first user message as title
-            const firstUserMsg = messages.find(
-                (m) => m.role === "user" && !isObsidianCommandMessage(m.content),
+            // Try to find the first H1 anywhere in the content (AI might have added preamble)
+            h1Match = cleanContent.match(/^#\s+([^\n]+)/m);
+            if (h1Match) {
+                researchTitle = h1Match[1].trim();
+                // Remove this H1 from content to avoid duplication
+                cleanContent = cleanContent.replace(/^#\s+[^\n]+\n*/m, "").trim();
+            }
+        }
+
+        // If still no title, extract user_prompt from the first command message
+        if (!researchTitle) {
+            const firstCommandMsg = messages.find(
+                (m) => m.role === "user" && isObsidianCommandMessage(m.content),
             );
-            if (firstUserMsg) {
-                researchTitle = firstUserMsg.content
-                    .split("\n")[0]
-                    .slice(0, 80);
+            if (firstCommandMsg) {
+                try {
+                    // Extract JSON from <obsidian_command>...</obsidian_command>
+                    const jsonMatch = firstCommandMsg.content.match(
+                        /<obsidian_command>\s*([\s\S]*?)\s*<\/obsidian_command>/,
+                    );
+                    if (jsonMatch) {
+                        const envelope = JSON.parse(jsonMatch[1]);
+                        if (envelope.user_prompt) {
+                            researchTitle = envelope.user_prompt
+                                .split("\n")[0]
+                                .slice(0, 80);
+                        }
+                    }
+                } catch {
+                    // JSON parse failed, ignore
+                }
             }
         }
 

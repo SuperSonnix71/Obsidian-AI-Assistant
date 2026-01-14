@@ -6,8 +6,12 @@ import type { WebSearchResultBundle } from "../providers/types";
 
 export function generateSearchQueryMessages(
     context: EditorContext | null,
-    userPrompt?: string
+    userPrompt?: string,
+    scope?: "selection" | "note" | "vault"
 ): Array<{ role: "system" | "user", content: string }> {
+    // For vault-scoped commands, don't include note context (they're independent)
+    const includeNoteContext = scope !== "vault";
+
     return [
         {
             role: "system",
@@ -15,7 +19,7 @@ export function generateSearchQueryMessages(
         },
         {
             role: "user",
-            content: `User Prompt: ${userPrompt || "None"}\n\nSelected Text (Context):\n${context?.selection?.text ? context.selection.text.slice(0, 500) : "None"}\n\nFull Note Title:\n${context?.note?.title || "None"}`
+            content: `User Prompt: ${userPrompt || "None"}\n\nSelected Text (Context):\n${includeNoteContext && context?.selection?.text ? context.selection.text.slice(0, 500) : "None"}\n\nFull Note Title:\n${includeNoteContext && context?.note?.title ? context.note?.title : "None"}`
         }
     ];
 }
