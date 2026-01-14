@@ -6001,9 +6001,8 @@ function instance3($$self, $$props, $$invalidate) {
       $$invalidate(7, error = "Original note not open.");
     }
   }
-  async function handleCreateNote(event) {
-    const { content } = event.detail;
-    let cleanContent = stripThinkingTags2(content);
+  async function createResearchNote(rawContent, showSavedFeedback = false) {
+    let cleanContent = stripThinkingTags2(rawContent);
     cleanContent = cleanContent.replace(/^##?\s*(Answer|Response|Reply):?\s*\n+/i, "").replace(/^(Certainly!?|Sure!?|Of course!?|Here('s| is| are))[^\n]*\n+/i, "").replace(/^(Below is|Here's|The following)[^\n]*:\n+/i, "").trim();
     let researchTitle = "";
     let h1Match = cleanContent.match(/^#\s+([^\n]+)/);
@@ -6032,11 +6031,7 @@ function instance3($$self, $$props, $$invalidate) {
         }
       }
     }
-    let fileName = researchTitle.replace(/[\\/:*?"<>|]/g, "").replace(
-      /\s+/g,
-      " "
-      // Normalize whitespace
-    ).trim().slice(0, 100);
+    let fileName = researchTitle.replace(/[\\/:*?"<>|]/g, "").replace(/\s+/g, " ").trim().slice(0, 100);
     if (!fileName) {
       fileName = `Research ${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}`;
     }
@@ -6047,10 +6042,7 @@ function instance3($$self, $$props, $$invalidate) {
       month: "long",
       day: "numeric"
     });
-    const titleSection = researchTitle ? `# ${researchTitle}
-
-` : "";
-    const finalContent = `${titleSection}*Created on ${date}*
+    const finalContent = `*Created on ${date}*
 
 ---
 
@@ -6062,12 +6054,25 @@ ${cleanContent}`;
         return;
       }
       const newFile = await plugin.app.vault.create(fileName, finalContent);
+      if (showSavedFeedback) {
+        $$invalidate(11, conversationSaved = true);
+        setTimeout(
+          () => {
+            $$invalidate(11, conversationSaved = false);
+          },
+          1500
+        );
+      }
       const leaf = plugin.app.workspace.getLeaf(false);
       await leaf.openFile(newFile);
     } catch (err) {
       console.error("Failed to create note:", err);
       $$invalidate(7, error = `Failed to create note: ${err.message || "Unknown error"}`);
     }
+  }
+  async function handleCreateNote(event) {
+    const { content } = event.detail;
+    await createResearchNote(content, false);
   }
   function openCommandPicker() {
     new CommandPickerModal(
@@ -6079,92 +6084,12 @@ ${cleanContent}`;
   }
   async function handleSaveConversation() {
     if (messages.length === 0) return;
-    let noteTitle = "";
-    const firstUserMsg = messages.find((m) => m.role === "user" && !isObsidianCommandMessage(m.content));
     const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant" && !isObsidianCommandMessage(m.content));
-    if (lastAssistantMsg) {
-      const h1Match = lastAssistantMsg.content.match(/^#\s+([^\n]+)/m);
-      if (h1Match) {
-        noteTitle = h1Match[1].trim();
-      }
+    if (!lastAssistantMsg) {
+      $$invalidate(7, error = "No assistant response found to save.");
+      return;
     }
-    if (!noteTitle && firstUserMsg) {
-      noteTitle = firstUserMsg.content.split("\n")[0].slice(0, 80);
-    }
-    if (!noteTitle) {
-      noteTitle = `Conversation ${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}`;
-    }
-    let fileName = noteTitle.replace(/[\\/:*?"<>|]/g, "").replace(
-      /\s+/g,
-      " "
-      // Normalize whitespace
-    ).trim().slice(0, 100);
-    fileName += ".md";
-    const content = formatConversationAsMarkdown(noteTitle);
-    try {
-      const existingFile = plugin.app.vault.getAbstractFileByPath(fileName);
-      if (existingFile) {
-        $$invalidate(7, error = `A note named "${fileName}" already exists. Please choose a different name.`);
-        return;
-      }
-      const newFile = await plugin.app.vault.create(fileName, content);
-      $$invalidate(11, conversationSaved = true);
-      setTimeout(
-        () => {
-          $$invalidate(11, conversationSaved = false);
-        },
-        1500
-      );
-      const leaf = plugin.app.workspace.getLeaf(false);
-      await leaf.openFile(newFile);
-    } catch (err) {
-      console.error("Failed to create note:", err);
-      $$invalidate(7, error = `Failed to create note: ${err.message || "Unknown error"}`);
-    }
-  }
-  function formatConversationAsMarkdown(title) {
-    const lines = [];
-    const date = (/* @__PURE__ */ new Date()).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
-    lines.push(`# ${title}`);
-    lines.push(``);
-    lines.push(`*Created on ${date}*`);
-    lines.push(``);
-    lines.push(`---`);
-    lines.push(``);
-    const assistantMessages = messages.filter((m) => m.role === "assistant" && !isObsidianCommandMessage(m.content));
-    if (assistantMessages.length > 0) {
-      let content = stripThinkingTags2(assistantMessages[assistantMessages.length - 1].content);
-      content = content.replace(/^(Certainly!?|Sure!?|Of course!?|Here('s| is| are))[^\n]*\n+/i, "").replace(/^(Below is|Here's|The following)[^\n]*:\n+/i, "").replace(/^##?\s*(Answer|Response|Reply):?\s*\n+/i, "").trim();
-      content = content.replace(/^#\s+[^\n]+\n+/, "");
-      content = cleanReferenceMarkers(content, webSearchResults);
-      lines.push(content);
-    } else {
-      for (const msg of messages) {
-        if (isObsidianCommandMessage(msg.content)) continue;
-        if (msg.role === "assistant") {
-          let content = stripThinkingTags2(msg.content);
-          content = cleanReferenceMarkers(content, webSearchResults);
-          lines.push(content);
-          lines.push(``);
-        }
-      }
-    }
-    if (webSearchResults && webSearchResults.results.length > 0) {
-      lines.push(``);
-      lines.push(`---`);
-      lines.push(``);
-      lines.push(`## Sources`);
-      lines.push(``);
-      for (const result of webSearchResults.results) {
-        lines.push(`- [${result.title}](${result.url})`);
-      }
-      lines.push(``);
-    }
-    return lines.join("\n");
+    await createResearchNote(lastAssistantMsg.content, true);
   }
   const click_handler = () => $$invalidate(3, settingsOpen = true);
   const click_handler_1 = () => $$invalidate(7, error = null);

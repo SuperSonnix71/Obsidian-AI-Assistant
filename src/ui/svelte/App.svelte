@@ -666,10 +666,12 @@
         return cleaned;
     }
 
-    // Handle create note request from ChatView (Research & Create Note command)
-    async function handleCreateNote(event: CustomEvent) {
-        const { content } = event.detail;
-        let cleanContent = stripThinkingTags(content);
+    // Shared helper for creating research notes
+    async function createResearchNote(
+        rawContent: string,
+        showSavedFeedback: boolean = false,
+    ): Promise<void> {
+        let cleanContent = stripThinkingTags(rawContent);
 
         // Remove common header prefixes that AI might add
         cleanContent = cleanContent
@@ -688,14 +690,12 @@
         let h1Match = cleanContent.match(/^#\s+([^\n]+)/);
         if (h1Match) {
             researchTitle = h1Match[1].trim();
-            // Remove the H1 heading from content since we'll add it properly
             cleanContent = cleanContent.replace(/^#\s+[^\n]+\n*/, "").trim();
         } else {
             // Try to find the first H1 anywhere in the content (AI might have added preamble)
             h1Match = cleanContent.match(/^#\s+([^\n]+)/m);
             if (h1Match) {
                 researchTitle = h1Match[1].trim();
-                // Remove this H1 from content to avoid duplication
                 cleanContent = cleanContent.replace(/^#\s+[^\n]+\n*/m, "").trim();
             }
         }
@@ -707,7 +707,6 @@
             );
             if (firstCommandMsg) {
                 try {
-                    // Extract JSON from <obsidian_command>...</obsidian_command>
                     const jsonMatch = firstCommandMsg.content.match(
                         /<obsidian_command>\s*([\s\S]*?)\s*<\/obsidian_command>/,
                     );
@@ -725,12 +724,12 @@
             }
         }
 
-        // Sanitize title for use as filename (remove invalid characters)
+        // Sanitize title for use as filename
         let fileName = researchTitle
-            .replace(/[\\/:*?"<>|]/g, "") // Remove invalid filename chars
-            .replace(/\s+/g, " ") // Normalize whitespace
+            .replace(/[\\/:*?"<>|]/g, "")
+            .replace(/\s+/g, " ")
             .trim()
-            .slice(0, 100); // Limit length
+            .slice(0, 100);
 
         if (!fileName) {
             fileName = `Research ${new Date().toISOString().slice(0, 10)}`;
@@ -740,17 +739,15 @@
         // Resolve reference markers to actual URLs
         cleanContent = cleanReferenceMarkers(cleanContent, webSearchResults);
 
-        // Add research title and creation date at the top
+        // Add creation date at the top (title is already used as filename)
         const date = new Date().toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
         });
-        const titleSection = researchTitle ? `# ${researchTitle}\n\n` : "";
-        const finalContent = `${titleSection}*Created on ${date}*\n\n---\n\n${cleanContent}`;
+        const finalContent = `*Created on ${date}*\n\n---\n\n${cleanContent}`;
 
         try {
-            // Check if file already exists
             const existingFile =
                 plugin.app.vault.getAbstractFileByPath(fileName);
             if (existingFile) {
@@ -758,19 +755,30 @@
                 return;
             }
 
-            // Create the new note
             const newFile = await plugin.app.vault.create(
                 fileName,
                 finalContent,
             );
 
-            // Open the newly created note
+            if (showSavedFeedback) {
+                conversationSaved = true;
+                setTimeout(() => {
+                    conversationSaved = false;
+                }, 1500);
+            }
+
             const leaf = plugin.app.workspace.getLeaf(false);
             await leaf.openFile(newFile);
         } catch (err: any) {
             console.error("Failed to create note:", err);
             error = `Failed to create note: ${err.message || "Unknown error"}`;
         }
+    }
+
+    // Handle create note request from ChatView (Research & Create Note command)
+    async function handleCreateNote(event: CustomEvent) {
+        const { content } = event.detail;
+        await createResearchNote(content, false);
     }
 
     function openCommandPicker() {
@@ -779,15 +787,10 @@
         }).open();
     }
 
-    // Save entire conversation as a note
+    // Save conversation as a note (uses last assistant message)
     async function handleSaveConversation() {
         if (messages.length === 0) return;
 
-        // Extract title from first user message or first H1 in assistant response
-        let noteTitle = "";
-        const firstUserMsg = messages.find(
-            (m) => m.role === "user" && !isObsidianCommandMessage(m.content),
-        );
         const lastAssistantMsg = [...messages]
             .reverse()
             .find(
@@ -796,134 +799,12 @@
                     !isObsidianCommandMessage(m.content),
             );
 
-        if (lastAssistantMsg) {
-            const h1Match = lastAssistantMsg.content.match(/^#\s+([^\n]+)/m);
-            if (h1Match) {
-                noteTitle = h1Match[1].trim();
-            }
+        if (!lastAssistantMsg) {
+            error = "No assistant response found to save.";
+            return;
         }
 
-        if (!noteTitle && firstUserMsg) {
-            noteTitle = firstUserMsg.content.split("\n")[0].slice(0, 80);
-        }
-
-        if (!noteTitle) {
-            noteTitle = `Conversation ${new Date().toISOString().slice(0, 10)}`;
-        }
-
-        // Sanitize title for use as filename
-        let fileName = noteTitle
-            .replace(/[\\/:*?"<>|]/g, "") // Remove invalid filename chars
-            .replace(/\s+/g, " ") // Normalize whitespace
-            .trim()
-            .slice(0, 100); // Limit length
-        fileName += ".md";
-
-        // Format conversation as markdown
-        const content = formatConversationAsMarkdown(noteTitle);
-
-        try {
-            // Check if file already exists
-            const existingFile =
-                plugin.app.vault.getAbstractFileByPath(fileName);
-            if (existingFile) {
-                error = `A note named "${fileName}" already exists. Please choose a different name.`;
-                return;
-            }
-
-            // Create the new note
-            const newFile = await plugin.app.vault.create(fileName, content);
-
-            // Show checkmark feedback
-            conversationSaved = true;
-            setTimeout(() => {
-                conversationSaved = false;
-            }, 1500);
-
-            // Open the newly created note
-            const leaf = plugin.app.workspace.getLeaf(false);
-            await leaf.openFile(newFile);
-        } catch (err: any) {
-            console.error("Failed to create note:", err);
-            error = `Failed to create note: ${err.message || "Unknown error"}`;
-        }
-    }
-
-    // Format all messages as clean markdown
-    function formatConversationAsMarkdown(title: string): string {
-        const lines: string[] = [];
-        const date = new Date().toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-
-        // Add title and creation date at the top
-        lines.push(`# ${title}`);
-        lines.push(``);
-        lines.push(`*Created on ${date}*`);
-        lines.push(``);
-        lines.push(`---`);
-        lines.push(``);
-
-        // For Research & Create Note, just output clean content from the last assistant response
-        // Find the last assistant message
-        const assistantMessages = messages.filter(
-            (m) =>
-                m.role === "assistant" &&
-                !isObsidianCommandMessage(m.content),
-        );
-
-        if (assistantMessages.length > 0) {
-            // Get the last assistant response
-            let content = stripThinkingTags(
-                assistantMessages[assistantMessages.length - 1].content,
-            );
-
-            // Remove common boilerplate intro phrases
-            content = content
-                .replace(
-                    /^(Certainly!?|Sure!?|Of course!?|Here('s| is| are))[^\n]*\n+/i,
-                    "",
-                )
-                .replace(/^(Below is|Here's|The following)[^\n]*:\n+/i, "")
-                .replace(/^##?\s*(Answer|Response|Reply):?\s*\n+/i, "")
-                .trim();
-
-            // Remove the first H1 heading (title) since filename already serves as title
-            content = content.replace(/^#\s+[^\n]+\n+/, "");
-
-            // Resolve reference markers to actual URLs
-            content = cleanReferenceMarkers(content, webSearchResults);
-
-            lines.push(content);
-        } else {
-            // Fallback: include all messages if no assistant messages found
-            for (const msg of messages) {
-                if (isObsidianCommandMessage(msg.content)) continue;
-                if (msg.role === "assistant") {
-                    let content = stripThinkingTags(msg.content);
-                    content = cleanReferenceMarkers(content, webSearchResults);
-                    lines.push(content);
-                    lines.push(``);
-                }
-            }
-        }
-
-        // Add web search sources if available
-        if (webSearchResults && webSearchResults.results.length > 0) {
-            lines.push(``);
-            lines.push(`---`);
-            lines.push(``);
-            lines.push(`## Sources`);
-            lines.push(``);
-            for (const result of webSearchResults.results) {
-                lines.push(`- [${result.title}](${result.url})`);
-            }
-            lines.push(``);
-        }
-
-        return lines.join("\n");
+        await createResearchNote(lastAssistantMsg.content, true);
     }
 </script>
 
