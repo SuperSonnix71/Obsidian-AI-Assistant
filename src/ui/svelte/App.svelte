@@ -97,7 +97,13 @@
     }
 
     async function runCommand() {
-        if (status !== "sending" || !activeCommandId) return;
+        if (status !== "sending") return;
+
+        if (!activeCommandId) {
+            error = "Please select a command from the menu above to get started.";
+            status = "error";
+            return;
+        }
 
         const command = COMMANDS.find((c) => c.id === activeCommandId);
         if (!command) {
@@ -514,6 +520,12 @@
     }
 
     function handleSendMessage() {
+        // Guard: Require a command to be selected
+        if (!activeCommandId) {
+            error = "Please select a command from the menu above to get started.";
+            return;
+        }
+
         // Clear previous error on new attempt
         if (status === "error") {
             error = null;
