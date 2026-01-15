@@ -3,6 +3,8 @@ import type { CommandSpec } from "../types/core";
 import type { PromptEnvelope } from "../types/prompting";
 import type { EditorContext } from "../editor/context";
 import type { WebSearchResultBundle } from "../providers/types";
+import { getVaultSummary } from "../editor/context";
+import type { App as ObsidianApp } from "obsidian";
 
 export function generateSearchQueryMessages(
     context: EditorContext | null,
@@ -28,10 +30,14 @@ export async function buildPromptEnvelope(
     command: CommandSpec,
     context: EditorContext | null,
     userPrompt?: string,
-    webSearchResults?: WebSearchResultBundle
+    webSearchResults?: WebSearchResultBundle,
+    app?: ObsidianApp
 ): Promise<PromptEnvelope> {
     // For vault-scoped commands, don't include note context (they're independent)
     const includeNoteContext = command.scope !== "vault";
+    
+    // For vault-scoped commands, include vault summary with note metadata
+    const vaultSummary = command.scope === "vault" && app ? getVaultSummary(app) : null;
 
     return {
         command_id: command.id,
@@ -44,7 +50,8 @@ export async function buildPromptEnvelope(
         constraints: {
             output_markdown: true,
         },
-        web_search_results: webSearchResults ? { enabled: true, ...webSearchResults } : { enabled: false }
+        web_search_results: webSearchResults ? { enabled: true, ...webSearchResults } : { enabled: false },
+        vault_summary: vaultSummary
     };
 }
 
@@ -52,7 +59,8 @@ export function createSystemMessage(): string {
     return `You are an assistant inside Obsidian.
 Follow the user's command precisely.
 If web_search_results are provided, use them as reference material. When citing sources, use standard Markdown links like [Source Title](URL) - do NOT use reference markers like [REF] tags.
-Never claim you accessed anything not included in the note content, selection, chat history, or web_search_results.
+If vault_summary is provided, use it to answer questions about the user's notes, find relevant documents by name/tags/frontmatter, and help with vault organization.
+Never claim you accessed anything not included in the note content, selection, chat history, vault_summary, or web_search_results.
 Output must be valid Markdown unless the command requires another format.`;
 }
 

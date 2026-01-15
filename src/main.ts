@@ -4,6 +4,7 @@ import { DEFAULT_SETTINGS } from "./settings/defaults";
 import { HistoryService } from "./history/store";
 import { AiAssistantView, VIEW_TYPE_AI_ASSISTANT } from "./ui/view";
 import { COMMANDS } from "./commands/registry";
+import { trackActiveNote } from "./editor/context";
 
 export default class AiAssistantPlugin extends Plugin {
     settings: PluginSettings;
@@ -50,6 +51,13 @@ export default class AiAssistantPlugin extends Plugin {
         };
 
         this.historyService = new HistoryService(this, data?.historyStore);
+
+        // Track active note for reliable context when sidebar steals focus
+        this.registerEvent(
+            this.app.workspace.on('active-leaf-change', () => {
+                trackActiveNote(this.app);
+            })
+        );
 
         // Add ribbon icon
         this.addRibbonIcon("bot", "AI Assistant", () => {

@@ -1,6 +1,7 @@
 
 import type { CommandId } from "./core";
 import type { WebSearchResultBundle } from "../providers/types";
+import type { VaultSummary } from "../editor/context";
 
 export interface PromptEnvelope {
     command_id: CommandId;
@@ -19,4 +20,5 @@ export interface PromptEnvelope {
         max_length_chars?: number;
     };
     web_search_results?: ({ enabled: false } | ({ enabled: true } & WebSearchResultBundle));
+    vault_summary?: VaultSummary | null;
 }
