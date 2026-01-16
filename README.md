@@ -124,8 +124,10 @@ Access at: `http://localhost:8000`
 
 #### Note-based Commands
 - **Chat (this note)** – Persistent conversation with the current note as context
-- **Search vault for notes** – Find and discuss notes across your entire vault
-- **Research & Create Note** – Generate a new note based on research results
+
+#### Vault-based Commands
+- **Search vault for notes** – Find notes by title, aliases, headings, tags, or description (clickable wikilinks)
+- **Research & Create Note** – Generate a new note based on web research results
 
 All commands are accessible via:
 - **Command Palette** (Cmd/Ctrl + P)
