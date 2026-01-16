@@ -10,7 +10,6 @@ export type CommandId =
     | "rewrite_selection_bullets"
     | "caption_selection"
     | "summarize_selection"
-    | "full_note_discussion"
     | "note_chat"
     | "vault_chat"
     | "research_create_note";

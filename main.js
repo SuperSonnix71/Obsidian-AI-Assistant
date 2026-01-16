@@ -1246,7 +1246,6 @@ var COMMANDS = [
   { id: "rewrite_selection_bullets", title: "Rewrite selection (Bullet points)", scope: "selection", delivery: "replace_selection", allowStreaming: true, allowWebSearch: false },
   { id: "caption_selection", title: "Caption selection", scope: "selection", delivery: "insert_below_selection", allowStreaming: true, allowWebSearch: true },
   { id: "summarize_selection", title: "Summarize selection", scope: "selection", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
-  { id: "full_note_discussion", title: "Discuss full note", scope: "note", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
   { id: "note_chat", title: "Chat (this note)", scope: "note", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
   { id: "vault_chat", title: "Chat (vault)", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
   { id: "research_create_note", title: "Research & Create Note", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: true }

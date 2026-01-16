@@ -12,7 +12,7 @@ export interface PromptEnvelope {
         to: { line: number; ch: number };
     } | null;
     note_context?: {
-        full_text: string | null; // required for full_note_discussion if enabled
+        full_text: string | null; // included for note-scoped commands
     };
     user_prompt?: string | null; // used by summarize_selection (custom prompt)
     constraints: {

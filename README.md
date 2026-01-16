@@ -123,7 +123,6 @@ Access at: `http://localhost:8000`
 - **Summarize selection** – Condense selected text
 
 #### Note-based Commands
-- **Discuss full note** – Analyze or discuss the entire note
 - **Chat (this note)** – Persistent conversation with the current note as context
 - **Chat (vault)** – Global conversation across your entire vault
 - **Research & Create Note** – Generate a new note based on research results
