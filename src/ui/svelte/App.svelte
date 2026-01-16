@@ -191,9 +191,9 @@
             }
 
             // ---------------------------------------------------------
-            // 1. Web Search Workflow (if enabled)
+            // 1. Web Search Workflow (if enabled and command allows it)
             // ---------------------------------------------------------
-            if (webSearchEnabled) {
+            if (webSearchEnabled && command.allowWebSearch) {
                 // <--- Checked local var
                 status = "searching";
                 searchStatus = "Generating web search query...";
