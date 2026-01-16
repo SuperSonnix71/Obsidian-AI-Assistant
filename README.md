@@ -15,6 +15,14 @@
 <br>
 <br>
 
+## Release Notes (v1.0.4)
+
+- Fixed hang when sending a message without a selected command.
+- Improved command context tracking across all commands.
+- Vault search fixes: richer metadata, better performance for large vaults, unified single-table output, and clickable wikilinks.
+- Corrected web search behavior for vault search (disabled) and restricted vault summary usage to vault search.
+- UI/prompting fixes: internal links clickable in chat view and prompt system messages now use templates.
+
 # Obsidian AI Assistant
 
 A fully private AI assistant plugin for Obsidian that runs entirely on your machine. Works offline, keeps your data private, and connects to any OpenAI-compatible model.
