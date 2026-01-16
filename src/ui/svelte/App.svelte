@@ -280,7 +280,7 @@
                 context,
                 userPrompt,
                 webSearchResults,
-                plugin.app,
+                plugin.vaultSummaryCache,
             );
             const systemMsgContent = createSystemMessage();
             const userMsgContent = createUserMessage(envelope);

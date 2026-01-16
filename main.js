@@ -1254,18 +1254,124 @@ var COMMANDS = [
 
 // src/editor/context.ts
 var import_obsidian = require("obsidian");
+
+// src/utils/minheap.ts
+var MinHeap = class _MinHeap {
+  /**
+   * @param compare Comparator function. Should return negative if a < b, positive if a > b, 0 if equal.
+   *                For a min-heap of numbers: (a, b) => a - b
+   */
+  constructor(compare) {
+    this.heap = [];
+    this.compare = compare;
+  }
+  get size() {
+    return this.heap.length;
+  }
+  peek() {
+    return this.heap[0];
+  }
+  push(value) {
+    this.heap.push(value);
+    this.bubbleUp(this.heap.length - 1);
+  }
+  pop() {
+    if (this.heap.length === 0) return void 0;
+    if (this.heap.length === 1) return this.heap.pop();
+    const result = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.bubbleDown(0);
+    return result;
+  }
+  toArray() {
+    return [...this.heap];
+  }
+  toSortedArray() {
+    const result = [];
+    const tempHeap = new _MinHeap(this.compare);
+    tempHeap.heap = [...this.heap];
+    while (tempHeap.size > 0) {
+      result.push(tempHeap.pop());
+    }
+    return result;
+  }
+  bubbleUp(index) {
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      if (this.compare(this.heap[index], this.heap[parentIndex]) >= 0) break;
+      this.swap(index, parentIndex);
+      index = parentIndex;
+    }
+  }
+  bubbleDown(index) {
+    const length = this.heap.length;
+    while (true) {
+      const leftChild = 2 * index + 1;
+      const rightChild = 2 * index + 2;
+      let smallest = index;
+      if (leftChild < length && this.compare(this.heap[leftChild], this.heap[smallest]) < 0) {
+        smallest = leftChild;
+      }
+      if (rightChild < length && this.compare(this.heap[rightChild], this.heap[smallest]) < 0) {
+        smallest = rightChild;
+      }
+      if (smallest === index) break;
+      this.swap(index, smallest);
+      index = smallest;
+    }
+  }
+  swap(i, j) {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  }
+};
+function findTopK(items, k, getValue) {
+  if (items.length <= k) {
+    return [...items];
+  }
+  const minHeap = new MinHeap((a, b) => getValue(a) - getValue(b));
+  for (const item of items) {
+    if (minHeap.size < k) {
+      minHeap.push(item);
+    } else if (getValue(item) > getValue(minHeap.peek())) {
+      minHeap.pop();
+      minHeap.push(item);
+    }
+  }
+  return minHeap.toArray();
+}
+
+// src/editor/context.ts
+var lastActiveNotePath = null;
+function trackActiveNote(app) {
+  const activeView = app.workspace.getActiveViewOfType(import_obsidian.MarkdownView);
+  if (activeView == null ? void 0 : activeView.file) {
+    lastActiveNotePath = activeView.file.path;
+  }
+}
 function getEditorContext(app) {
   let activeView = app.workspace.getActiveViewOfType(import_obsidian.MarkdownView);
   if (!activeView) {
     const leaves = app.workspace.getLeavesOfType("markdown");
     if (leaves.length > 0) {
-      const validLeaf = leaves.find((l) => {
-        const v = l.view;
-        const isMarkdown = v instanceof import_obsidian.MarkdownView || v.getViewType && v.getViewType() === "markdown";
-        return isMarkdown && !!v.file;
-      });
-      if (validLeaf) {
-        activeView = validLeaf.view;
+      if (lastActiveNotePath) {
+        const trackedLeaf = leaves.find((l) => {
+          var _a;
+          const v = l.view;
+          return ((_a = v.file) == null ? void 0 : _a.path) === lastActiveNotePath;
+        });
+        if (trackedLeaf) {
+          activeView = trackedLeaf.view;
+        }
+      }
+      if (!activeView) {
+        const validLeaf = leaves.find((l) => {
+          const v = l.view;
+          const isMarkdown = v instanceof import_obsidian.MarkdownView || v.getViewType && v.getViewType() === "markdown";
+          return isMarkdown && !!v.file;
+        });
+        if (validLeaf) {
+          activeView = validLeaf.view;
+        }
       }
     }
   }
@@ -1295,6 +1401,116 @@ function getEditorContext(app) {
     fullText: editor.getValue()
   };
 }
+var MAX_VAULT_NOTES = 500;
+var CACHE_INVALIDATE_DEBOUNCE = 500;
+function buildNoteSummary(app, file) {
+  const cache = app.metadataCache.getFileCache(file);
+  const frontmatter = (cache == null ? void 0 : cache.frontmatter) || null;
+  const tagSet = /* @__PURE__ */ new Set();
+  if (frontmatter == null ? void 0 : frontmatter.tags) {
+    if (Array.isArray(frontmatter.tags)) {
+      frontmatter.tags.forEach((t) => {
+        tagSet.add(t.startsWith("#") ? t : `#${t}`);
+      });
+    } else if (typeof frontmatter.tags === "string") {
+      tagSet.add(frontmatter.tags.startsWith("#") ? frontmatter.tags : `#${frontmatter.tags}`);
+    }
+  }
+  if (cache == null ? void 0 : cache.tags) {
+    cache.tags.forEach((tagCache) => {
+      tagSet.add(tagCache.tag);
+    });
+  }
+  return {
+    path: file.path,
+    title: (frontmatter == null ? void 0 : frontmatter.title) || file.basename,
+    tags: Array.from(tagSet),
+    frontmatter: frontmatter ? { ...frontmatter } : null
+  };
+}
+function buildVaultSummary(app) {
+  const files = app.vault.getMarkdownFiles();
+  const totalCount = files.length;
+  const truncated = totalCount > MAX_VAULT_NOTES;
+  const topFiles = findTopK(
+    files,
+    MAX_VAULT_NOTES,
+    (file) => file.stat.mtime
+  );
+  topFiles.sort((a, b) => b.stat.mtime - a.stat.mtime);
+  const notes = topFiles.map((file) => buildNoteSummary(app, file));
+  return {
+    noteCount: totalCount,
+    includedCount: notes.length,
+    truncated,
+    notes
+  };
+}
+var VaultSummaryCache = class {
+  constructor(plugin) {
+    this.cache = null;
+    this.debounceTimer = null;
+    this.app = plugin.app;
+    plugin.registerEvent(
+      plugin.app.vault.on("create", (file) => {
+        if (file instanceof import_obsidian.TFile && file.extension === "md") {
+          this.invalidate();
+        }
+      })
+    );
+    plugin.registerEvent(
+      plugin.app.vault.on("delete", (file) => {
+        if (file instanceof import_obsidian.TFile && file.extension === "md") {
+          this.invalidate();
+        }
+      })
+    );
+    plugin.registerEvent(
+      plugin.app.vault.on("rename", (file) => {
+        if (file instanceof import_obsidian.TFile && file.extension === "md") {
+          this.invalidate();
+        }
+      })
+    );
+    plugin.registerEvent(
+      plugin.app.metadataCache.on("changed", (file) => {
+        if (file.extension === "md") {
+          this.invalidate();
+        }
+      })
+    );
+  }
+  /**
+   * Invalidate the cache with debouncing to handle rapid file changes.
+   */
+  invalidate() {
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+    this.debounceTimer = setTimeout(() => {
+      this.cache = null;
+      this.debounceTimer = null;
+    }, CACHE_INVALIDATE_DEBOUNCE);
+  }
+  /**
+   * Get the vault summary, using cache if available.
+   * O(1) for cache hit, O(N log K) for cache miss.
+   */
+  get() {
+    if (this.cache) {
+      return this.cache;
+    }
+    this.cache = buildVaultSummary(this.app);
+    return this.cache;
+  }
+  /**
+   * Force rebuild the cache (useful for testing or manual refresh).
+   */
+  rebuild() {
+    this.cache = buildVaultSummary(this.app);
+    return this.cache;
+  }
+};
 
 // src/commands/prompting.ts
 function generateSearchQueryMessages(context, userPrompt, scope) {
@@ -1317,8 +1533,9 @@ ${includeNoteContext && ((_b = context == null ? void 0 : context.note) == null 
     }
   ];
 }
-async function buildPromptEnvelope(command, context, userPrompt, webSearchResults) {
+async function buildPromptEnvelope(command, context, userPrompt, webSearchResults, vaultSummaryCache) {
   const includeNoteContext = command.scope !== "vault";
+  const vaultSummary = command.scope === "vault" && vaultSummaryCache ? vaultSummaryCache.get() : null;
   return {
     command_id: command.id,
     note: includeNoteContext && (context == null ? void 0 : context.note) ? context.note : null,
@@ -1331,14 +1548,16 @@ async function buildPromptEnvelope(command, context, userPrompt, webSearchResult
     constraints: {
       output_markdown: true
     },
-    web_search_results: webSearchResults ? { enabled: true, ...webSearchResults } : { enabled: false }
+    web_search_results: webSearchResults ? { enabled: true, ...webSearchResults } : { enabled: false },
+    vault_summary: vaultSummary
   };
 }
 function createSystemMessage() {
   return `You are an assistant inside Obsidian.
 Follow the user's command precisely.
 If web_search_results are provided, use them as reference material. When citing sources, use standard Markdown links like [Source Title](URL) - do NOT use reference markers like [REF] tags.
-Never claim you accessed anything not included in the note content, selection, chat history, or web_search_results.
+If vault_summary is provided, use it to answer questions about the user's notes, find relevant documents by name/tags/frontmatter, and help with vault organization.
+Never claim you accessed anything not included in the note content, selection, chat history, vault_summary, or web_search_results.
 Output must be valid Markdown unless the command requires another format.`;
 }
 function createUserMessage(envelope) {
@@ -5680,7 +5899,12 @@ function instance3($$self, $$props, $$invalidate) {
   }
   async function runCommand() {
     var _a;
-    if (status !== "sending" || !activeCommandId) return;
+    if (status !== "sending") return;
+    if (!activeCommandId) {
+      $$invalidate(7, error = "Please select a command from the menu above to get started.");
+      $$invalidate(2, status = "error");
+      return;
+    }
     const command = COMMANDS.find((c) => c.id === activeCommandId);
     if (!command) {
       $$invalidate(7, error = "Command not found");
@@ -5789,7 +6013,7 @@ function instance3($$self, $$props, $$invalidate) {
         }
       }
       $$invalidate(2, status = "streaming");
-      const envelope = await buildPromptEnvelope(command, context, userPrompt, webSearchResults);
+      const envelope = await buildPromptEnvelope(command, context, userPrompt, webSearchResults, plugin.vaultSummaryCache);
       const systemMsgContent = createSystemMessage();
       const userMsgContent = createUserMessage(envelope);
       let threadId;
@@ -5945,6 +6169,10 @@ function instance3($$self, $$props, $$invalidate) {
     }
   }
   function handleSendMessage() {
+    if (!activeCommandId) {
+      $$invalidate(7, error = "Please select a command from the menu above to get started.");
+      return;
+    }
     if (status === "error") {
       $$invalidate(7, error = null);
     }
@@ -6264,6 +6492,12 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
       }
     };
     this.historyService = new HistoryService(this, data == null ? void 0 : data.historyStore);
+    this.vaultSummaryCache = new VaultSummaryCache(this);
+    this.registerEvent(
+      this.app.workspace.on("active-leaf-change", () => {
+        trackActiveNote(this.app);
+      })
+    );
     this.addRibbonIcon("bot", "AI Assistant", () => {
       this.activateView();
     });

@@ -1,5 +1,6 @@
 
-import { App as ObsidianApp, MarkdownView, Editor } from "obsidian";
+import { App as ObsidianApp, MarkdownView, Editor, Plugin, TFile, TAbstractFile } from "obsidian";
+import { findTopK } from "../utils/minheap";
 
 // Track the last active note path for reliable context when sidebar steals focus
 let lastActiveNotePath: string | null = null;
@@ -99,6 +100,9 @@ export function getEditorContext(app: ObsidianApp): EditorContext | null {
 // Maximum number of notes to include in vault summary to prevent token overflow
 const MAX_VAULT_NOTES = 500;
 
+// Debounce delay for cache invalidation (ms)
+const CACHE_INVALIDATE_DEBOUNCE = 500;
+
 export interface VaultNoteSummary {
     path: string;
     title: string;
@@ -114,52 +118,62 @@ export interface VaultSummary {
 }
 
 /**
- * Get a summary of all notes in the vault including metadata.
- * Used for vault-scoped commands to give AI context about available notes.
+ * Build a single note summary from a TFile.
+ * Uses Set for O(1) tag deduplication instead of O(m²) with includes().
  */
-export function getVaultSummary(app: ObsidianApp): VaultSummary {
+function buildNoteSummary(app: ObsidianApp, file: TFile): VaultNoteSummary {
+    const cache = app.metadataCache.getFileCache(file);
+    const frontmatter = cache?.frontmatter || null;
+    
+    // Use Set for O(1) deduplication instead of O(m²) with includes()
+    const tagSet = new Set<string>();
+    
+    // Tags from frontmatter
+    if (frontmatter?.tags) {
+        if (Array.isArray(frontmatter.tags)) {
+            frontmatter.tags.forEach((t: string) => {
+                tagSet.add(t.startsWith('#') ? t : `#${t}`);
+            });
+        } else if (typeof frontmatter.tags === 'string') {
+            tagSet.add(frontmatter.tags.startsWith('#') ? frontmatter.tags : `#${frontmatter.tags}`);
+        }
+    }
+    
+    // Inline tags from cache
+    if (cache?.tags) {
+        cache.tags.forEach(tagCache => {
+            tagSet.add(tagCache.tag);
+        });
+    }
+    
+    return {
+        path: file.path,
+        title: frontmatter?.title || file.basename,
+        tags: Array.from(tagSet),
+        frontmatter: frontmatter ? { ...frontmatter } : null
+    };
+}
+
+/**
+ * Build vault summary using heap-based Top-K algorithm.
+ * Time complexity: O(N log K) instead of O(N log N) for full sort.
+ */
+function buildVaultSummary(app: ObsidianApp): VaultSummary {
     const files = app.vault.getMarkdownFiles();
     const totalCount = files.length;
     const truncated = totalCount > MAX_VAULT_NOTES;
     
-    // Sort by modification time (most recent first) and limit
-    // Use spread to avoid mutating the original array from getMarkdownFiles()
-    const sortedFiles = [...files]
-        .sort((a, b) => b.stat.mtime - a.stat.mtime)
-        .slice(0, MAX_VAULT_NOTES);
+    // Use heap-based Top-K algorithm: O(N log K) instead of O(N log N)
+    const topFiles = findTopK(
+        files,
+        MAX_VAULT_NOTES,
+        (file) => file.stat.mtime
+    );
     
-    const notes: VaultNoteSummary[] = sortedFiles.map(file => {
-        const cache = app.metadataCache.getFileCache(file);
-        const frontmatter = cache?.frontmatter || null;
-        
-        // Extract tags from frontmatter and inline tags
-        const tags: string[] = [];
-        
-        // Tags from frontmatter
-        if (frontmatter?.tags) {
-            if (Array.isArray(frontmatter.tags)) {
-                tags.push(...frontmatter.tags.map((t: string) => t.startsWith('#') ? t : `#${t}`));
-            } else if (typeof frontmatter.tags === 'string') {
-                tags.push(frontmatter.tags.startsWith('#') ? frontmatter.tags : `#${frontmatter.tags}`);
-            }
-        }
-        
-        // Inline tags from cache
-        if (cache?.tags) {
-            cache.tags.forEach(tagCache => {
-                if (!tags.includes(tagCache.tag)) {
-                    tags.push(tagCache.tag);
-                }
-            });
-        }
-        
-        return {
-            path: file.path,
-            title: frontmatter?.title || file.basename,
-            tags,
-            frontmatter: frontmatter ? { ...frontmatter } : null
-        };
-    });
+    // Sort the top K files by mtime descending for consistent ordering
+    topFiles.sort((a, b) => b.stat.mtime - a.stat.mtime);
+    
+    const notes: VaultNoteSummary[] = topFiles.map(file => buildNoteSummary(app, file));
     
     return {
         noteCount: totalCount,
@@ -167,4 +181,97 @@ export function getVaultSummary(app: ObsidianApp): VaultSummary {
         truncated,
         notes
     };
+}
+
+/**
+ * Cache for vault summary with event-based invalidation.
+ * Provides O(1) access for repeated queries within the same session.
+ */
+export class VaultSummaryCache {
+    private cache: VaultSummary | null = null;
+    private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+    private app: ObsidianApp;
+
+    constructor(plugin: Plugin) {
+        this.app = plugin.app;
+        
+        // Register event listeners for cache invalidation
+        // Using registerEvent ensures proper cleanup on plugin unload
+        plugin.registerEvent(
+            plugin.app.vault.on('create', (file: TAbstractFile) => {
+                if (file instanceof TFile && file.extension === 'md') {
+                    this.invalidate();
+                }
+            })
+        );
+        
+        plugin.registerEvent(
+            plugin.app.vault.on('delete', (file: TAbstractFile) => {
+                if (file instanceof TFile && file.extension === 'md') {
+                    this.invalidate();
+                }
+            })
+        );
+        
+        plugin.registerEvent(
+            plugin.app.vault.on('rename', (file: TAbstractFile) => {
+                if (file instanceof TFile && file.extension === 'md') {
+                    this.invalidate();
+                }
+            })
+        );
+        
+        // Invalidate on metadata changes (frontmatter/tags updates)
+        plugin.registerEvent(
+            plugin.app.metadataCache.on('changed', (file: TFile) => {
+                if (file.extension === 'md') {
+                    this.invalidate();
+                }
+            })
+        );
+    }
+
+    /**
+     * Invalidate the cache with debouncing to handle rapid file changes.
+     */
+    private invalidate(): void {
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+        }
+        this.debounceTimer = setTimeout(() => {
+            this.cache = null;
+            this.debounceTimer = null;
+        }, CACHE_INVALIDATE_DEBOUNCE);
+    }
+
+    /**
+     * Get the vault summary, using cache if available.
+     * O(1) for cache hit, O(N log K) for cache miss.
+     */
+    get(): VaultSummary {
+        if (this.cache) {
+            return this.cache;
+        }
+        this.cache = buildVaultSummary(this.app);
+        return this.cache;
+    }
+
+    /**
+     * Force rebuild the cache (useful for testing or manual refresh).
+     */
+    rebuild(): VaultSummary {
+        this.cache = buildVaultSummary(this.app);
+        return this.cache;
+    }
+}
+
+/**
+ * Get a summary of all notes in the vault including metadata.
+ * Used for vault-scoped commands to give AI context about available notes.
+ * 
+ * @deprecated Use VaultSummaryCache.get() for better performance with caching.
+ * This function is kept for backward compatibility but builds fresh each time.
+ */
+export function getVaultSummary(app: ObsidianApp): VaultSummary {
+    return buildVaultSummary(app);
 }

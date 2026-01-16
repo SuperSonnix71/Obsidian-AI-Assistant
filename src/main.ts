@@ -4,11 +4,12 @@ import { DEFAULT_SETTINGS } from "./settings/defaults";
 import { HistoryService } from "./history/store";
 import { AiAssistantView, VIEW_TYPE_AI_ASSISTANT } from "./ui/view";
 import { COMMANDS } from "./commands/registry";
-import { trackActiveNote } from "./editor/context";
+import { trackActiveNote, VaultSummaryCache } from "./editor/context";
 
 export default class AiAssistantPlugin extends Plugin {
     settings: PluginSettings;
     historyService: HistoryService;
+    vaultSummaryCache: VaultSummaryCache;
 
     constructor(app: ObsidianApp, manifest: PluginManifest) {
         super(app, manifest);
@@ -51,6 +52,10 @@ export default class AiAssistantPlugin extends Plugin {
         };
 
         this.historyService = new HistoryService(this, data?.historyStore);
+
+        // Initialize vault summary cache with event-based invalidation
+        // Uses O(N log K) heap algorithm for efficient Top-K extraction
+        this.vaultSummaryCache = new VaultSummaryCache(this);
 
         // Track active note for reliable context when sidebar steals focus
         this.registerEvent(

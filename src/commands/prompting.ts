@@ -1,10 +1,8 @@
 
 import type { CommandSpec } from "../types/core";
 import type { PromptEnvelope } from "../types/prompting";
-import type { EditorContext } from "../editor/context";
+import type { EditorContext, VaultSummaryCache } from "../editor/context";
 import type { WebSearchResultBundle } from "../providers/types";
-import { getVaultSummary } from "../editor/context";
-import type { App as ObsidianApp } from "obsidian";
 
 export function generateSearchQueryMessages(
     context: EditorContext | null,
@@ -31,13 +29,14 @@ export async function buildPromptEnvelope(
     context: EditorContext | null,
     userPrompt?: string,
     webSearchResults?: WebSearchResultBundle,
-    app?: ObsidianApp
+    vaultSummaryCache?: VaultSummaryCache
 ): Promise<PromptEnvelope> {
     // For vault-scoped commands, don't include note context (they're independent)
     const includeNoteContext = command.scope !== "vault";
     
     // For vault-scoped commands, include vault summary with note metadata
-    const vaultSummary = command.scope === "vault" && app ? getVaultSummary(app) : null;
+    // Uses cached summary with O(1) access, O(N log K) on cache miss
+    const vaultSummary = command.scope === "vault" && vaultSummaryCache ? vaultSummaryCache.get() : null;
 
     return {
         command_id: command.id,
