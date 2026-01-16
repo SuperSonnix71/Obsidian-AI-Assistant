@@ -34,9 +34,9 @@ export async function buildPromptEnvelope(
     // For vault-scoped commands, don't include note context (they're independent)
     const includeNoteContext = command.scope !== "vault";
     
-    // For vault-scoped commands, include vault summary with note metadata
-    // Uses cached summary with O(1) access, O(N log K) on cache miss
-    const vaultSummary = command.scope === "vault" && vaultSummaryCache ? vaultSummaryCache.get() : null;
+    // Only include vault summary for vault_chat (search vault) command
+    // research_create_note is vault-scoped but focuses on web research, not vault search
+    const vaultSummary = command.id === "vault_chat" && vaultSummaryCache ? vaultSummaryCache.get() : null;
 
     return {
         command_id: command.id,

@@ -1559,7 +1559,7 @@ ${includeNoteContext && ((_b = context == null ? void 0 : context.note) == null 
 }
 async function buildPromptEnvelope(command, context, userPrompt, webSearchResults, vaultSummaryCache) {
   const includeNoteContext = command.scope !== "vault";
-  const vaultSummary = command.scope === "vault" && vaultSummaryCache ? vaultSummaryCache.get() : null;
+  const vaultSummary = command.id === "vault_chat" && vaultSummaryCache ? vaultSummaryCache.get() : null;
   return {
     command_id: command.id,
     note: includeNoteContext && (context == null ? void 0 : context.note) ? context.note : null,
