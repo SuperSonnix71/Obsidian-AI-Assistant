@@ -1247,7 +1247,7 @@ var COMMANDS = [
   { id: "caption_selection", title: "Caption selection", scope: "selection", delivery: "insert_below_selection", allowStreaming: true, allowWebSearch: true },
   { id: "summarize_selection", title: "Summarize selection", scope: "selection", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
   { id: "note_chat", title: "Chat (this note)", scope: "note", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
-  { id: "vault_chat", title: "Search vault for notes", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
+  { id: "vault_chat", title: "Search vault for notes", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: false },
   { id: "research_create_note", title: "Research & Create Note", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: true }
 ];
 
