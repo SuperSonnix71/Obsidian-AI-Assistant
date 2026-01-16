@@ -787,6 +787,10 @@ input[type="range"].styled-slider:hover::-moz-range-thumb {
   display: block;
 }
 
+.inline {
+  display: inline;
+}
+
 .flex {
   display: flex;
 }

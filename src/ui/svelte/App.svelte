@@ -282,7 +282,7 @@
                 webSearchResults,
                 plugin.vaultSummaryCache,
             );
-            const systemMsgContent = createSystemMessage();
+            const systemMsgContent = createSystemMessage(command);
             const userMsgContent = createUserMessage(envelope);
 
             let threadId: string | undefined;

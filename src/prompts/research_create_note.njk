@@ -1,0 +1,25 @@
+{# Template for Research & Create Note command #}
+{% extends "base.njk" %}
+
+{% block command_instructions %}
+Your task is to research the user's topic using web search results and create a well-structured note.
+
+Create a comprehensive research note with:
+1. **Title**: A clear, descriptive title for the note
+2. **Overview**: A brief summary of the topic
+3. **Key Findings**: Main points organized with headings and subheadings
+4. **Sources**: List of references with links
+
+Format the output as a complete Markdown note that can be saved directly to the vault.
+
+Structure guidelines:
+- Use H1 (#) for the main title
+- Use H2 (##) for major sections
+- Use H3 (###) for subsections
+- Include bullet points for lists
+- Add code blocks where relevant
+- Cite sources inline using [Source Title](URL) format
+- End with a Sources section listing all references
+
+Focus purely on web research - do not include information from the user's existing vault notes.
+{% endblock %}

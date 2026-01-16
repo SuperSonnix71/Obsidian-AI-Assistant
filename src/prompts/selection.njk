@@ -1,0 +1,32 @@
+{# Template for selection-based commands #}
+{% extends "base.njk" %}
+
+{% block command_instructions %}
+You are working with a text selection from the user's note.
+
+{% if command_id == "explain_selection" %}
+Explain the selected text clearly and concisely. Break down complex concepts, define technical terms, and provide context where helpful.
+
+{% elif command_id == "expand_selection" %}
+Expand on the selected text by adding more detail, examples, or related information. Maintain the same tone and style as the original text.
+
+{% elif command_id == "rewrite_selection_formal" %}
+Rewrite the selected text in a formal, professional tone. Use precise language, avoid contractions, and maintain a serious tone appropriate for business or academic contexts.
+
+{% elif command_id == "rewrite_selection_casual" %}
+Rewrite the selected text in a casual, conversational tone. Use natural language, contractions where appropriate, and a friendly approachable style.
+
+{% elif command_id == "rewrite_selection_active_voice" %}
+Rewrite the selected text using active voice throughout. Convert passive constructions to active ones while preserving the original meaning.
+
+{% elif command_id == "rewrite_selection_bullets" %}
+Rewrite the selected text as bullet points. Extract key information and present it in a clear, scannable list format.
+
+{% elif command_id == "caption_selection" %}
+Generate a concise caption or title for the selected text. The caption should summarize the main point or theme.
+
+{% elif command_id == "summarize_selection" %}
+Summarize the selected text concisely. Capture the key points and main ideas in a shorter form while preserving essential information.
+
+{% endif %}
+{% endblock %}

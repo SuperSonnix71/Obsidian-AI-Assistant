@@ -1,0 +1,24 @@
+{# Template for Search vault for notes command #}
+{% extends "base.njk" %}
+
+{% block web_search_instructions %}
+{# No web search for vault search command #}
+{% endblock %}
+
+{% block command_instructions %}
+You have access to a vault_summary containing metadata about the user's notes including: path, title, aliases, tags, headings, description, and created date.
+
+Use this information to help users find relevant notes, answer questions about their vault, and assist with vault organization.
+
+When listing notes from the vault, ALWAYS use a single unified table with this exact format:
+| Note | Created | Focus |
+|------|---------|-------|
+| [[path/to/note.md]] | YYYY-MM-DD | Key headings or topics from the note |
+
+Rules:
+- The Note column MUST use [[wikilink]] syntax so links are clickable
+- The Created column shows the file creation date formatted as YYYY-MM-DD
+- The Focus column summarizes the main headings or topics from the note
+- Never split results into multiple tables - combine all matching notes into one table regardless of topic
+- Search across title, aliases, tags, headings, and description to find relevant notes
+{% endblock %}

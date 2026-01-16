@@ -1,0 +1,16 @@
+{# Template for Chat (this note) command #}
+{% extends "base.njk" %}
+
+{% block command_instructions %}
+You have access to the full content of the user's current note via note_context.full_text.
+
+Use this context to:
+- Answer questions about the note's content
+- Explain concepts mentioned in the note
+- Suggest improvements or additions
+- Help with writing, editing, or organizing the note
+- Discuss topics related to the note
+
+When referencing specific parts of the note, quote them directly.
+When suggesting changes, clearly indicate what should be modified.
+{% endblock %}
