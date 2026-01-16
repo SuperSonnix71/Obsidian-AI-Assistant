@@ -795,6 +795,10 @@ input[type="range"].styled-slider:hover::-moz-range-thumb {
   display: inline-flex;
 }
 
+.table {
+  display: table;
+}
+
 .h-3 {
   height: 0.75rem;
 }
