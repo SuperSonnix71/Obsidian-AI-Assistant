@@ -124,7 +124,7 @@ Access at: `http://localhost:8000`
 
 #### Note-based Commands
 - **Chat (this note)** – Persistent conversation with the current note as context
-- **Chat (vault)** – Global conversation across your entire vault
+- **Search vault for notes** – Find and discuss notes across your entire vault
 - **Research & Create Note** – Generate a new note based on research results
 
 All commands are accessible via:

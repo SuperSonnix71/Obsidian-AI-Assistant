@@ -106,7 +106,11 @@ const CACHE_INVALIDATE_DEBOUNCE = 500;
 export interface VaultNoteSummary {
     path: string;
     title: string;
+    aliases: string[];
     tags: string[];
+    headings: string[];
+    description: string | null;
+    created: number;
     frontmatter: Record<string, any> | null;
 }
 
@@ -146,10 +150,44 @@ function buildNoteSummary(app: ObsidianApp, file: TFile): VaultNoteSummary {
         });
     }
     
+    // Extract aliases from frontmatter (can be string or array)
+    const aliases: string[] = [];
+    if (frontmatter?.aliases) {
+        if (Array.isArray(frontmatter.aliases)) {
+            frontmatter.aliases.forEach((alias: unknown) => {
+                if (typeof alias === 'string') {
+                    aliases.push(alias);
+                }
+            });
+        } else if (typeof frontmatter.aliases === 'string') {
+            aliases.push(frontmatter.aliases);
+        }
+    }
+    
+    // Extract H1 and H2 headings from cache
+    const headings: string[] = [];
+    if (cache?.headings) {
+        cache.headings.forEach(heading => {
+            if (heading.level <= 2) {
+                headings.push(heading.heading);
+            }
+        });
+    }
+    
+    // Extract description from frontmatter (common fields: description, summary, excerpt)
+    const description = frontmatter?.description 
+        || frontmatter?.summary 
+        || frontmatter?.excerpt 
+        || null;
+    
     return {
         path: file.path,
         title: frontmatter?.title || file.basename,
+        aliases,
         tags: Array.from(tagSet),
+        headings,
+        description: typeof description === 'string' ? description : null,
+        created: file.stat.ctime,
         frontmatter: frontmatter ? { ...frontmatter } : null
     };
 }

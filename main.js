@@ -1247,7 +1247,7 @@ var COMMANDS = [
   { id: "caption_selection", title: "Caption selection", scope: "selection", delivery: "insert_below_selection", allowStreaming: true, allowWebSearch: true },
   { id: "summarize_selection", title: "Summarize selection", scope: "selection", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
   { id: "note_chat", title: "Chat (this note)", scope: "note", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
-  { id: "vault_chat", title: "Chat (vault)", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
+  { id: "vault_chat", title: "Search vault for notes", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: true },
   { id: "research_create_note", title: "Research & Create Note", scope: "vault", delivery: "chat_only", allowStreaming: true, allowWebSearch: true }
 ];
 
@@ -1420,10 +1420,35 @@ function buildNoteSummary(app, file) {
       tagSet.add(tagCache.tag);
     });
   }
+  const aliases = [];
+  if (frontmatter == null ? void 0 : frontmatter.aliases) {
+    if (Array.isArray(frontmatter.aliases)) {
+      frontmatter.aliases.forEach((alias) => {
+        if (typeof alias === "string") {
+          aliases.push(alias);
+        }
+      });
+    } else if (typeof frontmatter.aliases === "string") {
+      aliases.push(frontmatter.aliases);
+    }
+  }
+  const headings = [];
+  if (cache == null ? void 0 : cache.headings) {
+    cache.headings.forEach((heading) => {
+      if (heading.level <= 2) {
+        headings.push(heading.heading);
+      }
+    });
+  }
+  const description = (frontmatter == null ? void 0 : frontmatter.description) || (frontmatter == null ? void 0 : frontmatter.summary) || (frontmatter == null ? void 0 : frontmatter.excerpt) || null;
   return {
     path: file.path,
     title: (frontmatter == null ? void 0 : frontmatter.title) || file.basename,
+    aliases,
     tags: Array.from(tagSet),
+    headings,
+    description: typeof description === "string" ? description : null,
+    created: file.stat.ctime,
     frontmatter: frontmatter ? { ...frontmatter } : null
   };
 }
