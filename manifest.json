@@ -1,7 +1,7 @@
 {
     "id": "ai-assistant",
     "name": "AI Assistant",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "minAppVersion": "0.15.0",
     "description": "A fully private AI assistant that runs entirely on your machine (macOS/Linux). Connect to local models (Ollama, vLLM, llama.cpp) or self-hosted endpoints. Explain, expand, rewrite, summarize, and research topics. Create new notes from AI insights or chat across your entire vault. Optional web search grounding via SearXNG keeps your vault private while enriching AI context.",
     "author": "SuperSonnix71",
