@@ -1902,18 +1902,18 @@ function add_css(target) {
 }
 function get_each_context(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[28] = list[i];
+  child_ctx[29] = list[i];
   return child_ctx;
 }
 function get_each_context_1(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[31] = list[i];
+  child_ctx[32] = list[i];
   return child_ctx;
 }
 function get_each_context_2(ctx, list, i) {
   const child_ctx = ctx.slice();
-  child_ctx[34] = list[i];
-  child_ctx[36] = i;
+  child_ctx[35] = list[i];
+  child_ctx[37] = i;
   return child_ctx;
 }
 function create_if_block_9(ctx) {
@@ -1931,7 +1931,7 @@ function create_if_block_9(ctx) {
   let dispose;
   let if_block = (
     /*message*/
-    ctx[34].role === "assistant" && create_if_block_10(ctx)
+    ctx[35].role === "assistant" && create_if_block_10(ctx)
   );
   return {
     c() {
@@ -1944,9 +1944,9 @@ function create_if_block_9(ctx) {
       attr(div0, "class", "markdown-preview select-text helper-render");
       attr(div1, "class", "prose prose-sm prose-invert max-w-none break-words");
       attr(div2, "class", div2_class_value = "group relative max-w-[85%] rounded-2xl px-4 py-3 text-sm " + /*message*/
-      (ctx[34].role === "user" ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted/50 rounded-bl-sm"));
+      (ctx[35].role === "user" ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted/50 rounded-bl-sm"));
       attr(div3, "class", div3_class_value = "flex w-full " + /*message*/
-      (ctx[34].role === "user" ? "justify-end" : "justify-start"));
+      (ctx[35].role === "user" ? "justify-end" : "justify-start"));
     },
     m(target, anchor) {
       insert(target, div3, anchor);
@@ -1962,15 +1962,15 @@ function create_if_block_9(ctx) {
           null,
           div0,
           /*message*/
-          ctx[34].role === "assistant" ? (
+          ctx[35].role === "assistant" ? (
             /*cleanAssistantMessage*/
             ctx[18](
               /*message*/
-              ctx[34].content
+              ctx[35].content
             )
           ) : (
             /*message*/
-            ctx[34].content
+            ctx[35].content
           )
         ));
         mounted = true;
@@ -1982,20 +1982,20 @@ function create_if_block_9(ctx) {
       2) markdown_action.update.call(
         null,
         /*message*/
-        ctx[34].role === "assistant" ? (
+        ctx[35].role === "assistant" ? (
           /*cleanAssistantMessage*/
           ctx[18](
             /*message*/
-            ctx[34].content
+            ctx[35].content
           )
         ) : (
           /*message*/
-          ctx[34].content
+          ctx[35].content
         )
       );
       if (
         /*message*/
-        ctx[34].role === "assistant"
+        ctx[35].role === "assistant"
       ) {
         if (if_block) {
           if_block.p(ctx, dirty);
@@ -2010,12 +2010,12 @@ function create_if_block_9(ctx) {
       }
       if (!current || dirty[0] & /*messages*/
       2 && div2_class_value !== (div2_class_value = "group relative max-w-[85%] rounded-2xl px-4 py-3 text-sm " + /*message*/
-      (ctx[34].role === "user" ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted/50 rounded-bl-sm"))) {
+      (ctx[35].role === "user" ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted/50 rounded-bl-sm"))) {
         attr(div2, "class", div2_class_value);
       }
       if (!current || dirty[0] & /*messages*/
       2 && div3_class_value !== (div3_class_value = "flex w-full " + /*message*/
-      (ctx[34].role === "user" ? "justify-end" : "justify-start"))) {
+      (ctx[35].role === "user" ? "justify-end" : "justify-start"))) {
         attr(div3, "class", div3_class_value);
       }
     },
@@ -2062,7 +2062,7 @@ function create_if_block_10(ctx) {
     if (
       /*copiedMessageIndex*/
       ctx2[8] === /*index*/
-      ctx2[36]
+      ctx2[37]
     ) return create_if_block_15;
     return create_else_block_5;
   }
@@ -2073,15 +2073,15 @@ function create_if_block_10(ctx) {
       /*click_handler*/
       ctx[22](
         /*message*/
-        ctx[34],
+        ctx[35],
         /*index*/
-        ctx[36]
+        ctx[37]
       )
     );
   }
   let if_block1 = (
     /*message*/
-    ((_a = ctx[34].context) == null ? void 0 : _a.selection) && create_if_block_13(ctx)
+    ((_a = ctx[35].context) == null ? void 0 : _a.selection) && create_if_block_13(ctx)
   );
   let if_block2 = (
     /*activeCommandId*/
@@ -2098,10 +2098,10 @@ function create_if_block_10(ctx) {
       if (if_block2) if_block2.c();
       attr(button, "class", button_class_value = "p-1.5 rounded-md hover:bg-background/20 transition-colors " + /*copiedMessageIndex*/
       (ctx[8] === /*index*/
-      ctx[36] ? "text-primary" : "text-muted-foreground hover:text-foreground"));
+      ctx[37] ? "text-primary" : "text-muted-foreground hover:text-foreground"));
       attr(button, "title", button_title_value = /*copiedMessageIndex*/
       ctx[8] === /*index*/
-      ctx[36] ? "Copied!" : "Copy to clipboard");
+      ctx[37] ? "Copied!" : "Copy to clipboard");
       attr(div, "class", "mt-2 pt-2 border-t border-border/50 flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity");
     },
     m(target, anchor) {
@@ -2131,18 +2131,18 @@ function create_if_block_10(ctx) {
       if (dirty[0] & /*copiedMessageIndex*/
       256 && button_class_value !== (button_class_value = "p-1.5 rounded-md hover:bg-background/20 transition-colors " + /*copiedMessageIndex*/
       (ctx[8] === /*index*/
-      ctx[36] ? "text-primary" : "text-muted-foreground hover:text-foreground"))) {
+      ctx[37] ? "text-primary" : "text-muted-foreground hover:text-foreground"))) {
         attr(button, "class", button_class_value);
       }
       if (dirty[0] & /*copiedMessageIndex*/
       256 && button_title_value !== (button_title_value = /*copiedMessageIndex*/
       ctx[8] === /*index*/
-      ctx[36] ? "Copied!" : "Copy to clipboard")) {
+      ctx[37] ? "Copied!" : "Copy to clipboard")) {
         attr(button, "title", button_title_value);
       }
       if (
         /*message*/
-        (_a2 = ctx[34].context) == null ? void 0 : _a2.selection
+        (_a2 = ctx[35].context) == null ? void 0 : _a2.selection
       ) {
         if (if_block1) {
           if_block1.p(ctx, dirty);
@@ -2260,7 +2260,7 @@ function create_if_block_13(ctx) {
     if (
       /*replacedMessageIndex*/
       ctx2[9] === /*index*/
-      ctx2[36]
+      ctx2[37]
     ) return create_if_block_14;
     return create_else_block_4;
   }
@@ -2271,9 +2271,9 @@ function create_if_block_13(ctx) {
       /*click_handler_1*/
       ctx[23](
         /*message*/
-        ctx[34],
+        ctx[35],
         /*index*/
-        ctx[36]
+        ctx[37]
       )
     );
   }
@@ -2283,10 +2283,10 @@ function create_if_block_13(ctx) {
       if_block.c();
       attr(button, "class", button_class_value = "p-1.5 rounded-md hover:bg-background/20 transition-colors " + /*replacedMessageIndex*/
       (ctx[9] === /*index*/
-      ctx[36] ? "text-primary" : "text-muted-foreground hover:text-foreground"));
+      ctx[37] ? "text-primary" : "text-muted-foreground hover:text-foreground"));
       attr(button, "title", button_title_value = /*replacedMessageIndex*/
       ctx[9] === /*index*/
-      ctx[36] ? "Replaced!" : "Replace selection with this text");
+      ctx[37] ? "Replaced!" : "Replace selection with this text");
     },
     m(target, anchor) {
       insert(target, button, anchor);
@@ -2309,13 +2309,13 @@ function create_if_block_13(ctx) {
       if (dirty[0] & /*replacedMessageIndex*/
       512 && button_class_value !== (button_class_value = "p-1.5 rounded-md hover:bg-background/20 transition-colors " + /*replacedMessageIndex*/
       (ctx[9] === /*index*/
-      ctx[36] ? "text-primary" : "text-muted-foreground hover:text-foreground"))) {
+      ctx[37] ? "text-primary" : "text-muted-foreground hover:text-foreground"))) {
         attr(button, "class", button_class_value);
       }
       if (dirty[0] & /*replacedMessageIndex*/
       512 && button_title_value !== (button_title_value = /*replacedMessageIndex*/
       ctx[9] === /*index*/
-      ctx[36] ? "Replaced!" : "Replace selection with this text")) {
+      ctx[37] ? "Replaced!" : "Replace selection with this text")) {
         attr(button, "title", button_title_value);
       }
     },
@@ -2401,7 +2401,7 @@ function create_if_block_11(ctx) {
     if (
       /*createdNoteIndex*/
       ctx2[10] === /*index*/
-      ctx2[36]
+      ctx2[37]
     ) return create_if_block_12;
     return create_else_block_3;
   }
@@ -2412,9 +2412,9 @@ function create_if_block_11(ctx) {
       /*click_handler_2*/
       ctx[24](
         /*message*/
-        ctx[34],
+        ctx[35],
         /*index*/
-        ctx[36]
+        ctx[37]
       )
     );
   }
@@ -2424,10 +2424,10 @@ function create_if_block_11(ctx) {
       if_block.c();
       attr(button, "class", button_class_value = "p-1.5 rounded-md hover:bg-background/20 transition-colors " + /*createdNoteIndex*/
       (ctx[10] === /*index*/
-      ctx[36] ? "text-primary" : "text-muted-foreground hover:text-foreground"));
+      ctx[37] ? "text-primary" : "text-muted-foreground hover:text-foreground"));
       attr(button, "title", button_title_value = /*createdNoteIndex*/
       ctx[10] === /*index*/
-      ctx[36] ? "Note created!" : "Create note from this response");
+      ctx[37] ? "Note created!" : "Create note from this response");
     },
     m(target, anchor) {
       insert(target, button, anchor);
@@ -2450,13 +2450,13 @@ function create_if_block_11(ctx) {
       if (dirty[0] & /*createdNoteIndex*/
       1024 && button_class_value !== (button_class_value = "p-1.5 rounded-md hover:bg-background/20 transition-colors " + /*createdNoteIndex*/
       (ctx[10] === /*index*/
-      ctx[36] ? "text-primary" : "text-muted-foreground hover:text-foreground"))) {
+      ctx[37] ? "text-primary" : "text-muted-foreground hover:text-foreground"))) {
         attr(button, "class", button_class_value);
       }
       if (dirty[0] & /*createdNoteIndex*/
       1024 && button_title_value !== (button_title_value = /*createdNoteIndex*/
       ctx[10] === /*index*/
-      ctx[36] ? "Note created!" : "Create note from this response")) {
+      ctx[37] ? "Note created!" : "Create note from this response")) {
         attr(button, "title", button_title_value);
       }
     },
@@ -2548,7 +2548,7 @@ function create_if_block_12(ctx) {
 }
 function create_each_block_2(ctx) {
   let show_if = !/*message*/
-  ctx[34].content.trim().startsWith("<obsidian_command>");
+  ctx[35].content.trim().startsWith("<obsidian_command>");
   let if_block_anchor;
   let if_block = show_if && create_if_block_9(ctx);
   return {
@@ -2563,7 +2563,7 @@ function create_each_block_2(ctx) {
     p(ctx2, dirty) {
       if (dirty[0] & /*messages*/
       2) show_if = !/*message*/
-      ctx2[34].content.trim().startsWith("<obsidian_command>");
+      ctx2[35].content.trim().startsWith("<obsidian_command>");
       if (show_if) {
         if (if_block) {
           if_block.p(ctx2, dirty);
@@ -2883,7 +2883,7 @@ function create_each_block_1(ctx) {
   let span;
   let t1_value = (
     /*query*/
-    ctx[31] + ""
+    ctx[32] + ""
   );
   let t1;
   let t2;
@@ -2922,7 +2922,7 @@ function create_each_block_1(ctx) {
     p(ctx2, dirty) {
       if (dirty[0] & /*searchQueries*/
       64 && t1_value !== (t1_value = /*query*/
-      ctx2[31] + "")) set_data(t1, t1_value);
+      ctx2[32] + "")) set_data(t1, t1_value);
     },
     d(detaching) {
       if (detaching) {
@@ -3087,7 +3087,7 @@ function create_each_block(ctx) {
   let span;
   let t1_value = (
     /*result*/
-    ctx[28].title + ""
+    ctx[29].title + ""
   );
   let t1;
   let a_href_value;
@@ -3095,7 +3095,7 @@ function create_each_block(ctx) {
     if (dirty[0] & /*webSearchResults*/
     128) show_if = null;
     if (show_if == null) show_if = !!/*result*/
-    ctx2[28].url.includes("github.com");
+    ctx2[29].url.includes("github.com");
     if (show_if) return create_if_block_6;
     return create_else_block_1;
   }
@@ -3112,7 +3112,7 @@ function create_each_block(ctx) {
       attr(div, "class", "shrink-0 text-muted-foreground/70 group-hover:text-primary transition-colors");
       attr(span, "class", "text-xs font-medium text-foreground truncate group-hover:text-primary transition-colors max-w-[150px]");
       attr(a, "href", a_href_value = /*result*/
-      ctx[28].url);
+      ctx[29].url);
       attr(a, "target", "_blank");
       attr(a, "rel", "noopener noreferrer");
       attr(a, "class", "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background hover:bg-muted/50 border border-border/50 hover:border-primary/30 transition-all no-underline group max-w-full shadow-sm");
@@ -3136,10 +3136,10 @@ function create_each_block(ctx) {
       }
       if (dirty[0] & /*webSearchResults*/
       128 && t1_value !== (t1_value = /*result*/
-      ctx2[28].title + "")) set_data(t1, t1_value);
+      ctx2[29].title + "")) set_data(t1, t1_value);
       if (dirty[0] & /*webSearchResults*/
       128 && a_href_value !== (a_href_value = /*result*/
-      ctx2[28].url)) {
+      ctx2[29].url)) {
         attr(a, "href", a_href_value);
       }
     },
@@ -3810,15 +3810,28 @@ function instance($$self, $$props, $$invalidate) {
     node.empty();
     const component = new import_obsidian5.Component();
     import_obsidian5.MarkdownRenderer.render(plugin.app, text2, node, "", component);
+    makeLinksClickable(node);
     return {
       update(newText) {
         node.empty();
         import_obsidian5.MarkdownRenderer.render(plugin.app, newText, node, "", component);
+        makeLinksClickable(node);
       },
       destroy() {
         component.unload();
       }
     };
+  }
+  function makeLinksClickable(container) {
+    const internalLinks = container.querySelectorAll("a.internal-link");
+    internalLinks.forEach((link) => {
+      const anchor = link;
+      const href = anchor.getAttribute("href") || anchor.dataset.href || anchor.textContent || "";
+      anchor.addEventListener("click", (evt) => {
+        evt.preventDefault();
+        plugin.app.workspace.openLinkText(href, "", false);
+      });
+    });
   }
   const click_handler = (message, index) => handleCopy(message.content, index);
   const click_handler_1 = (message, index) => handleReplace(message.context, message.content, index);

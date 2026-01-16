@@ -140,6 +140,9 @@
         node.empty();
         const component = new Component();
         MarkdownRenderer.render(plugin.app, text, node, "", component);
+        
+        // Make internal links clickable
+        makeLinksClickable(node);
 
         return {
             update(newText: string) {
@@ -151,11 +154,28 @@
                     "",
                     component,
                 );
+                // Make internal links clickable after update
+                makeLinksClickable(node);
             },
             destroy() {
                 component.unload();
             },
         };
+    }
+    
+    function makeLinksClickable(container: HTMLElement) {
+        // Find all internal links rendered by MarkdownRenderer
+        const internalLinks = container.querySelectorAll('a.internal-link');
+        internalLinks.forEach((link) => {
+            const anchor = link as HTMLAnchorElement;
+            const href = anchor.getAttribute('href') || anchor.dataset.href || anchor.textContent || '';
+            
+            anchor.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                // Open the linked note
+                plugin.app.workspace.openLinkText(href, '', false);
+            });
+        });
     }
 </script>
 
