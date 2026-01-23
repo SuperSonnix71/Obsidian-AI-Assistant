@@ -2,9 +2,16 @@ import { Plugin, App as ObsidianApp, PluginManifest, WorkspaceLeaf } from "obsid
 import { PluginSettings } from "./types/settings";
 import { DEFAULT_SETTINGS } from "./settings/defaults";
 import { HistoryService } from "./history/store";
+import { HistoryStore } from "./types/history";
 import { AiAssistantView, VIEW_TYPE_AI_ASSISTANT } from "./ui/view";
 import { COMMANDS } from "./commands/registry";
 import { trackActiveNote, VaultSummaryCache } from "./editor/context";
+
+// Type for plugin's persisted data
+interface PluginData {
+    settings?: Partial<PluginSettings>;
+    historyStore?: Partial<HistoryStore>;
+}
 
 export default class AiAssistantPlugin extends Plugin {
     settings: PluginSettings;
@@ -13,7 +20,7 @@ export default class AiAssistantPlugin extends Plugin {
 
     constructor(app: ObsidianApp, manifest: PluginManifest) {
         super(app, manifest);
-        this.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS)); // deep copy defaults
+        this.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS)) as PluginSettings; // deep copy defaults
     }
 
     async onload() {
@@ -27,9 +34,9 @@ export default class AiAssistantPlugin extends Plugin {
         );
 
         // Initialize History Service
-        const data = await this.loadData();
+        const data = await this.loadData() as PluginData | null;
         // Deep merge settings
-        const loadedSettings = data?.settings || {};
+        const loadedSettings: Partial<PluginSettings> = data?.settings ?? {};
         this.settings = {
             ...DEFAULT_SETTINGS,
             ...loadedSettings,
@@ -118,8 +125,9 @@ export default class AiAssistantPlugin extends Plugin {
         void this.saveSettings();
     }
 
-    async loadSettings() {
+    loadSettings(): Promise<void> {
         // Loaded in onload manually to handle structure
+        return Promise.resolve();
     }
 
     async saveSettings() {

@@ -4,7 +4,7 @@
 
 <div align="center">
   <a href="https://github.com/SuperSonnix71/obsidian-ai-assistant/releases">
-    <img src="https://img.shields.io/badge/Release-v1.0.6-blue" alt="Release v1.0.6" />
+    <img src="https://img.shields.io/badge/Release-v1.0.7-blue" alt="Release v1.0.7" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-green" alt="License MIT" />

@@ -1,6 +1,13 @@
 
 import { StreamEvent } from "../types";
 
+// Type for OpenAI SSE streaming response
+interface OpenAIStreamResponse {
+    choices?: Array<{
+        delta?: { content?: string };
+    }>;
+}
+
 /**
  * Parses SSE stream (Server-Sent Events).
  * Spec 6.3.3:
@@ -30,7 +37,7 @@ export function createSseParser(onEvent: (ev: StreamEvent) => void) {
             }
 
             try {
-                const data = JSON.parse(dataStr);
+                const data = JSON.parse(dataStr) as OpenAIStreamResponse;
                 // OpenAI chunk format: choices[0].delta.content
                 const delta = data.choices?.[0]?.delta?.content;
                 if (delta) {

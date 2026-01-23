@@ -22,7 +22,7 @@ export class CommandPickerModal extends FuzzySuggestModal<CommandSpec> {
         return `${command.title} ${command.scope}`;
     }
 
-    onChooseItem(command: CommandSpec, evt: MouseEvent | KeyboardEvent): void {
+    onChooseItem(command: CommandSpec, _evt: MouseEvent | KeyboardEvent): void {
         this.onChoose(command.id);
     }
 }

@@ -1,6 +1,13 @@
 
 import { StreamEvent } from "../types";
 
+// Type for Ollama NDJSON streaming response
+interface OllamaStreamResponse {
+    done?: boolean;
+    message?: { content?: string };
+    response?: string;
+}
+
 /**
  * Parses NDJSON stream (newline delimited JSON).
  * Spec 6.2.3:
@@ -20,7 +27,7 @@ export function createNdjsonParser(onEvent: (ev: StreamEvent) => void) {
         for (const line of lines) {
             if (!line.trim()) continue;
             try {
-                const data = JSON.parse(line);
+                const data = JSON.parse(line) as OllamaStreamResponse;
                 // Ollama: "response" field has token, "done" field is boolean
                 if (data.done) {
                     onEvent({ type: "done" });

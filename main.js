@@ -7402,21 +7402,22 @@ var MinHeap = class {
   }
   bubbleDown(index) {
     const length = this.heap.length;
-    while (true) {
+    let smallest = index;
+    do {
+      index = smallest;
       const leftChild = 2 * index + 1;
       const rightChild = 2 * index + 2;
-      let smallest = index;
+      smallest = index;
       if (leftChild < length && this.compare(this.heap[leftChild], this.heap[smallest]) < 0) {
         smallest = leftChild;
       }
       if (rightChild < length && this.compare(this.heap[rightChild], this.heap[smallest]) < 0) {
         smallest = rightChild;
       }
-      if (smallest === index)
-        break;
-      this.swap(index, smallest);
-      index = smallest;
-    }
+      if (smallest !== index) {
+        this.swap(index, smallest);
+      }
+    } while (smallest !== index);
   }
   swap(i, j) {
     [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
@@ -7502,8 +7503,9 @@ function getEditorContext(app) {
 var MAX_VAULT_NOTES = 500;
 var CACHE_INVALIDATE_DEBOUNCE = 500;
 function buildNoteSummary(app, file) {
+  var _a;
   const cache = app.metadataCache.getFileCache(file);
-  const frontmatter = (cache == null ? void 0 : cache.frontmatter) || null;
+  const frontmatter = (_a = cache == null ? void 0 : cache.frontmatter) != null ? _a : null;
   const tagSet = /* @__PURE__ */ new Set();
   if (frontmatter == null ? void 0 : frontmatter.tags) {
     if (Array.isArray(frontmatter.tags)) {
@@ -8133,7 +8135,7 @@ var CommandPickerModal = class extends import_obsidian4.FuzzySuggestModal {
   getItemText(command) {
     return `${command.title} ${command.scope}`;
   }
-  onChooseItem(command, evt) {
+  onChooseItem(command, _evt) {
     this.onChoose(command.id);
   }
 };
@@ -10247,7 +10249,7 @@ var ModelPickerModal = class extends import_obsidian6.FuzzySuggestModal {
   getItemText(model) {
     return model.id;
   }
-  onChooseItem(model, evt) {
+  onChooseItem(model, _evt) {
     this.onChoose(model.id);
   }
 };
@@ -12891,6 +12893,7 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
     this.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
   }
   async onload() {
+    var _a;
     console.debug("Loading AI Assistant Plugin...");
     await this.loadSettings();
     this.registerView(
@@ -12898,7 +12901,7 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
       (leaf) => new AiAssistantView(leaf, this)
     );
     const data = await this.loadData();
-    const loadedSettings = (data == null ? void 0 : data.settings) || {};
+    const loadedSettings = (_a = data == null ? void 0 : data.settings) != null ? _a : {};
     this.settings = {
       ...DEFAULT_SETTINGS,
       ...loadedSettings,
@@ -12969,7 +12972,8 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
   onunload() {
     void this.saveSettings();
   }
-  async loadSettings() {
+  loadSettings() {
+    return Promise.resolve();
   }
   async saveSettings() {
     await this.saveData({

@@ -2,6 +2,17 @@
 import { App as ObsidianApp, MarkdownView, Plugin, TFile, TAbstractFile } from "obsidian";
 import { findTopK } from "../utils/minheap";
 
+// Type for frontmatter with common fields
+interface FrontmatterData {
+    title?: string;
+    tags?: string | string[];
+    aliases?: string | string[] | unknown[];
+    description?: string;
+    summary?: string;
+    excerpt?: string;
+    [key: string]: unknown;
+}
+
 // Track the last active note path for reliable context when sidebar steals focus
 let lastActiveNotePath: string | null = null;
 
@@ -127,7 +138,7 @@ export interface VaultSummary {
  */
 function buildNoteSummary(app: ObsidianApp, file: TFile): VaultNoteSummary {
     const cache = app.metadataCache.getFileCache(file);
-    const frontmatter = cache?.frontmatter || null;
+    const frontmatter = (cache?.frontmatter as FrontmatterData | undefined) ?? null;
     
     // Use Set for O(1) deduplication instead of O(m²) with includes()
     const tagSet = new Set<string>();

@@ -3,6 +3,21 @@ import { WebSearchSettings } from "../types/settings";
 import { WebSearchResultBundle, WebSearchResultItem } from "../providers/types";
 import { requestUrl } from "obsidian";
 
+// Type for SearXNG API response
+interface SearxngResult {
+    title?: string;
+    url?: string;
+    link?: string;
+    content?: string;
+    snippet?: string;
+    engine?: string;
+    score?: number;
+}
+
+interface SearxngResponse {
+    results?: SearxngResult[];
+}
+
 /**
  * Spec 7.1: SearXNG JSON API
  * Spec 7.2: Normalization
@@ -30,7 +45,7 @@ export async function runSearxngSearch(
             throw new Error(`Search failed: ${res.status}`);
         }
 
-        const data = res.json;
+        const data = res.json as SearxngResponse;
 
         // Validate JSON structure (Spec 7.1 practical schema)
         if (!data.results || !Array.isArray(data.results)) {
@@ -38,9 +53,9 @@ export async function runSearxngSearch(
         }
 
         // Spec 7.2: Take top default 5 (settings.maxResults)
-        const rawResults = data.results.slice(0, settings.maxResults);
+        const rawResults: SearxngResult[] = data.results.slice(0, settings.maxResults);
 
-        const results: WebSearchResultItem[] = rawResults.map((item: { title?: string; url?: string; link?: string; content?: string; snippet?: string; engine?: string; score?: number }) => ({
+        const results: WebSearchResultItem[] = rawResults.map((item: SearxngResult) => ({
             title: item.title || "No title",
             url: item.url || item.link || "", // 'link' is common in some APIs, 'url' in others. SearXNG uses 'url'.
             content: stripHtml(item.content || item.snippet || ""), // Spec 7.2: strip tags

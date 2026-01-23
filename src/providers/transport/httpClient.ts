@@ -30,7 +30,7 @@ export const httpClient: HttpClient = {
         if (res.status >= 300) {
             throw new Error(`Request failed: ${res.status} ${res.text}`);
         }
-        return res.json;
+        return res.json as unknown;
     },
 
     async post(url: string, body: unknown, headers: Record<string, string> = {}) {
@@ -46,7 +46,7 @@ export const httpClient: HttpClient = {
         if (res.status >= 300) {
             throw new Error(`Request failed: ${res.status} ${res.text}`);
         }
-        return res.json;
+        return res.json as unknown;
     },
 
     async stream(
@@ -81,7 +81,7 @@ export const httpClient: HttpClient = {
                 }
 
                 res.setEncoding("utf8");
-                res.on("data", (chunk) => {
+                res.on("data", (chunk: string) => {
                     if (signal?.aborted) {
                         res.destroy(); // stop reading
                         return;

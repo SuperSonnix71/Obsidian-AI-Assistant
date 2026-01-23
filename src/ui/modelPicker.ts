@@ -20,7 +20,7 @@ export class ModelPickerModal extends FuzzySuggestModal<ModelInfo> {
         return model.id;
     }
 
-    onChooseItem(model: ModelInfo, evt: MouseEvent | KeyboardEvent): void {
+    onChooseItem(model: ModelInfo, _evt: MouseEvent | KeyboardEvent): void {
         this.onChoose(model.id);
     }
 }

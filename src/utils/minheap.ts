@@ -66,10 +66,13 @@ export class MinHeap<T> {
 
     private bubbleDown(index: number): void {
         const length = this.heap.length;
-        while (true) {
+        let smallest = index;
+
+        do {
+            index = smallest;
             const leftChild = 2 * index + 1;
             const rightChild = 2 * index + 2;
-            let smallest = index;
+            smallest = index;
 
             if (leftChild < length && this.compare(this.heap[leftChild], this.heap[smallest]) < 0) {
                 smallest = leftChild;
@@ -78,10 +81,10 @@ export class MinHeap<T> {
                 smallest = rightChild;
             }
 
-            if (smallest === index) break;
-            this.swap(index, smallest);
-            index = smallest;
-        }
+            if (smallest !== index) {
+                this.swap(index, smallest);
+            }
+        } while (smallest !== index);
     }
 
     private swap(i: number, j: number): void {
