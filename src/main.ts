@@ -106,7 +106,7 @@ export default class AiAssistantPlugin extends Plugin {
         }
 
         if (leaf) {
-            workspace.revealLeaf(leaf);
+            await workspace.revealLeaf(leaf);
             if (commandId) {
                 const view = leaf.view as AiAssistantView;
                 view.setCommand(commandId);

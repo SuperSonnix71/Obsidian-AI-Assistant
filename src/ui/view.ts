@@ -25,7 +25,7 @@ export class AiAssistantView extends ItemView {
         return "bot";
     }
 
-    async onOpen(): Promise<void> {
+    onOpen(): Promise<void> {
         const container = this.containerEl.children[1];
         container.empty();
 
@@ -40,6 +40,7 @@ export class AiAssistantView extends ItemView {
                 onClose: () => { }
             }
         });
+        return Promise.resolve();
     }
 
     setCommand(commandId: string) {
@@ -50,9 +51,10 @@ export class AiAssistantView extends ItemView {
     }
 
 
-    async onClose(): Promise<void> {
+    onClose(): Promise<void> {
         if (this.component) {
             this.component.$destroy();
         }
+        return Promise.resolve();
     }
 }

@@ -12856,7 +12856,7 @@ var AiAssistantView = class extends import_obsidian7.ItemView {
   getIcon() {
     return "bot";
   }
-  async onOpen() {
+  onOpen() {
     const container = this.containerEl.children[1];
     container.empty();
     container.addClass("h-full");
@@ -12869,16 +12869,18 @@ var AiAssistantView = class extends import_obsidian7.ItemView {
         }
       }
     });
+    return Promise.resolve();
   }
   setCommand(commandId) {
     if (this.component) {
       this.component.$set({ initialCommandId: commandId });
     }
   }
-  async onClose() {
+  onClose() {
     if (this.component) {
       this.component.$destroy();
     }
+    return Promise.resolve();
   }
 };
 
@@ -12957,7 +12959,7 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
       }
     }
     if (leaf) {
-      workspace.revealLeaf(leaf);
+      await workspace.revealLeaf(leaf);
       if (commandId) {
         const view = leaf.view;
         view.setCommand(commandId);
