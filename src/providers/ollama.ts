@@ -52,7 +52,7 @@ export class OllamaClient implements ProviderClient {
             return { content: "" };
         } else {
             // Non-streaming
-            const res = await httpClient.post(url, body);
+            const res = await httpClient.post(url, body) as { message?: { content?: string } };
             // Spec 6.2.4: take message.content
             const content = res.message?.content || "";
             return { content, raw: res };

@@ -6238,7 +6238,7 @@ var HistoryService = class {
   }
   updateThread(thread) {
     this.store.threads[thread.id] = thread;
-    this.save();
+    void this.save();
   }
   async save() {
     await this.plugin.saveData(this.plugin.settings);
@@ -6275,7 +6275,7 @@ var HistoryService = class {
     };
     thread.messages.push(chatMessage);
     thread.updatedAt = Date.now();
-    this.save();
+    void this.save();
   }
   clearThread(threadId) {
     const thread = this.store.threads[threadId];
@@ -6283,7 +6283,7 @@ var HistoryService = class {
       return;
     thread.messages = [];
     thread.updatedAt = Date.now();
-    this.save();
+    void this.save();
   }
   clearVaultThread() {
     this.clearThread(this.store.vaultThreadId);
@@ -7800,7 +7800,7 @@ ${includeNoteContext && ((_b = context == null ? void 0 : context.note) == null 
     }
   ];
 }
-async function buildPromptEnvelope(command, context, userPrompt, webSearchResults, vaultSummaryCache) {
+function buildPromptEnvelope(command, context, userPrompt, webSearchResults, vaultSummaryCache) {
   const includeNoteContext = command.scope !== "vault";
   const vaultSummary = command.id === "vault_chat" && vaultSummaryCache ? vaultSummaryCache.get() : null;
   return {
@@ -8001,7 +8001,7 @@ function createSseParser(onEvent) {
         if (delta) {
           onEvent({ type: "token", value: delta });
         }
-      } catch (err) {
+      } catch (e) {
       }
     }
   };
@@ -12851,7 +12851,7 @@ var AiAssistantView = class extends import_obsidian7.ItemView {
     return VIEW_TYPE_AI_ASSISTANT;
   }
   getDisplayText() {
-    return "AI Assistant";
+    return "AI assistant";
   }
   getIcon() {
     return "bot";
@@ -12889,7 +12889,7 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
     this.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
   }
   async onload() {
-    console.log("Loading AI Assistant Plugin...");
+    console.debug("Loading AI Assistant Plugin...");
     await this.loadSettings();
     this.registerView(
       VIEW_TYPE_AI_ASSISTANT,
@@ -12924,22 +12924,22 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
         trackActiveNote(this.app);
       })
     );
-    this.addRibbonIcon("bot", "AI Assistant", () => {
-      this.activateView();
+    this.addRibbonIcon("bot", "AI assistant", () => {
+      void this.activateView();
     });
     this.addCommand({
       id: "open-ai-assistant",
-      name: "Open AI Assistant",
+      name: "Open AI assistant",
       callback: () => {
-        this.activateView();
+        void this.activateView();
       }
     });
     COMMANDS.forEach((cmd) => {
       this.addCommand({
         id: cmd.id,
         name: cmd.title,
-        editorCallback: (editor, view) => {
-          this.activateView(cmd.id);
+        editorCallback: () => {
+          void this.activateView(cmd.id);
         }
       });
     });
@@ -12964,8 +12964,8 @@ var AiAssistantPlugin = class extends import_obsidian8.Plugin {
       }
     }
   }
-  async onunload() {
-    await this.saveSettings();
+  onunload() {
+    void this.saveSettings();
   }
   async loadSettings() {
   }

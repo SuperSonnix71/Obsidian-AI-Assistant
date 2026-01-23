@@ -48,9 +48,9 @@ export function getEditorContext(app: ObsidianApp): EditorContext | null {
             // Fallback: Find the first leaf that is a MarkdownView AND has a valid file
             if (!activeView) {
                 const validLeaf = leaves.find(l => {
-                    const v = l.view as MarkdownView;
+                    const v = l.view;
                     const isMarkdown = v instanceof MarkdownView || (v.getViewType && v.getViewType() === "markdown");
-                    return isMarkdown && !!v.file;
+                    return isMarkdown && !!(v as MarkdownView).file;
                 });
 
                 if (validLeaf) {

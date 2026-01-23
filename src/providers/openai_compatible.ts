@@ -73,7 +73,7 @@ export class OpenAICompatibleClient implements ProviderClient {
             return { content: "" };
         } else {
             // Non-streaming
-            const res = await httpClient.post(url, body, headers);
+            const res = await httpClient.post(url, body, headers) as { choices?: Array<{ message?: { content?: string } }> };
             // Spec 6.3.4: choices[0].message.content
             const content = res.choices?.[0]?.message?.content || "";
             return { content, raw: res };

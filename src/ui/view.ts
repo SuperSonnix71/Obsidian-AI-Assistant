@@ -25,7 +25,7 @@ export class AiAssistantView extends ItemView {
         return "bot";
     }
 
-    onOpen() {
+    async onOpen(): Promise<void> {
         const container = this.containerEl.children[1];
         container.empty();
 
@@ -50,7 +50,7 @@ export class AiAssistantView extends ItemView {
     }
 
 
-    onClose() {
+    async onClose(): Promise<void> {
         if (this.component) {
             this.component.$destroy();
         }
