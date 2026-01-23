@@ -18,14 +18,14 @@ export class AiAssistantView extends ItemView {
     }
 
     getDisplayText() {
-        return "AI Assistant";
+        return "AI assistant";
     }
 
     getIcon() {
         return "bot";
     }
 
-    async onOpen() {
+    onOpen() {
         const container = this.containerEl.children[1];
         container.empty();
 
@@ -50,7 +50,7 @@ export class AiAssistantView extends ItemView {
     }
 
 
-    async onClose() {
+    onClose() {
         if (this.component) {
             this.component.$destroy();
         }

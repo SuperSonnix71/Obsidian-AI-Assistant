@@ -1,5 +1,5 @@
 
-import { App as ObsidianApp, MarkdownView, Editor } from "obsidian";
+import { App as ObsidianApp, MarkdownView } from "obsidian";
 import { DeliveryMode } from "../types/core";
 
 export function applyToEditor(
@@ -23,25 +23,28 @@ export function applyToEditor(
             break;
 
         case "insert":
-        case "insert_below_selection":
+        case "insert_below_selection": {
             // Spec 10.2: set cursor to selection end; insert \n\n + output
             const to = editor.getCursor("to");
             editor.setCursor(to);
             editor.replaceRange(`\n\n${content}`, to);
             break;
+        }
 
-        case "insert_at_cursor":
+        case "insert_at_cursor": {
             const cursor = editor.getCursor();
             editor.replaceRange(content, cursor);
             break;
+        }
 
         case "append":
-        case "append_to_note":
+        case "append_to_note": {
             const lastLine = editor.lineCount();
             const lastLineContent = editor.getLine(lastLine - 1);
             const separator = lastLineContent.trim() ? "\n\n" : "\n";
             editor.replaceRange(`${separator}${content}`, { line: lastLine, ch: 0 });
             break;
+        }
 
         case "chat_only":
             // Do nothing

@@ -35,8 +35,8 @@ export class OpenAICompatibleClient implements ProviderClient {
         try {
             const res = await httpClient.get(url, this.getHeaders());
             // Parse { data: [{ id: string }] }
-            const data = res.data || [];
-            return data.map((m: any) => ({
+            const data: Array<{ id: string }> = (res as { data?: Array<{ id: string }> }).data || [];
+            return data.map((m) => ({
                 id: m.id,
                 label: m.id,
                 details: m

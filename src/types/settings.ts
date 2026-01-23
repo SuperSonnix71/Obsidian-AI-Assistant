@@ -1,5 +1,4 @@
 
-import { ProviderKind } from "./core";
 
 export interface WebSearchSettings {
     enabled: boolean;
@@ -25,7 +24,7 @@ export interface OpenAICompatibleSettings {
 export interface PluginSettings {
     activeProvider: string;
     providers: {
-        [key: string]: any;
+        [key: string]: OllamaSettings | OpenAICompatibleSettings;
         ollama: OllamaSettings;
         openai: OpenAICompatibleSettings;
     };

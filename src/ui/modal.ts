@@ -14,7 +14,7 @@ export class AiModal extends Modal {
         this.initialCommandId = initialCommandId;
     }
 
-    async onOpen() {
+    onOpen() {
         const { contentEl } = this;
         contentEl.empty();
 

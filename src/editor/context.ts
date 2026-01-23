@@ -1,5 +1,5 @@
 
-import { App as ObsidianApp, MarkdownView, Editor, Plugin, TFile, TAbstractFile } from "obsidian";
+import { App as ObsidianApp, MarkdownView, Plugin, TFile, TAbstractFile } from "obsidian";
 import { findTopK } from "../utils/minheap";
 
 // Track the last active note path for reliable context when sidebar steals focus
@@ -37,7 +37,7 @@ export function getEditorContext(app: ObsidianApp): EditorContext | null {
             // First, try to find the leaf matching our tracked last active note
             if (lastActiveNotePath) {
                 const trackedLeaf = leaves.find(l => {
-                    const v = l.view as any;
+                    const v = l.view as MarkdownView;
                     return v.file?.path === lastActiveNotePath;
                 });
                 if (trackedLeaf) {
@@ -48,7 +48,7 @@ export function getEditorContext(app: ObsidianApp): EditorContext | null {
             // Fallback: Find the first leaf that is a MarkdownView AND has a valid file
             if (!activeView) {
                 const validLeaf = leaves.find(l => {
-                    const v = l.view as any;
+                    const v = l.view as MarkdownView;
                     const isMarkdown = v instanceof MarkdownView || (v.getViewType && v.getViewType() === "markdown");
                     return isMarkdown && !!v.file;
                 });
@@ -111,7 +111,7 @@ export interface VaultNoteSummary {
     headings: string[];
     description: string | null;
     created: number;
-    frontmatter: Record<string, any> | null;
+    frontmatter: Record<string, unknown> | null;
 }
 
 export interface VaultSummary {

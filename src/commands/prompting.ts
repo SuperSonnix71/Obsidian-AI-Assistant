@@ -25,13 +25,13 @@ export function generateSearchQueryMessages(
     ];
 }
 
-export async function buildPromptEnvelope(
+export function buildPromptEnvelope(
     command: CommandSpec,
     context: EditorContext | null,
     userPrompt?: string,
     webSearchResults?: WebSearchResultBundle,
     vaultSummaryCache?: VaultSummaryCache
-): Promise<PromptEnvelope> {
+): PromptEnvelope {
     // For vault-scoped commands, don't include note context (they're independent)
     const includeNoteContext = command.scope !== "vault";
     

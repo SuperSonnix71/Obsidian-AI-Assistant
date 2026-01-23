@@ -1,5 +1,4 @@
 
-import { ChatMessage } from "../types/history";
 
 export interface ModelInfo {
     id: string;      // canonical id/name

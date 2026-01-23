@@ -40,7 +40,7 @@ export async function runSearxngSearch(
         // Spec 7.2: Take top default 5 (settings.maxResults)
         const rawResults = data.results.slice(0, settings.maxResults);
 
-        const results: WebSearchResultItem[] = rawResults.map((item: any) => ({
+        const results: WebSearchResultItem[] = rawResults.map((item: { title?: string; url?: string; link?: string; content?: string; snippet?: string; engine?: string; score?: number }) => ({
             title: item.title || "No title",
             url: item.url || item.link || "", // 'link' is common in some APIs, 'url' in others. SearXNG uses 'url'.
             content: stripHtml(item.content || item.snippet || ""), // Spec 7.2: strip tags

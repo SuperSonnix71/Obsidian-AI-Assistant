@@ -1,15 +1,15 @@
 
-import { requestUrl, RequestUrlParam } from "obsidian";
+import { requestUrl } from "obsidian";
 import * as http from "http";
 import * as https from "https";
 import { URL } from "url";
 
 export interface HttpClient {
-    get(url: string, headers?: Record<string, string>): Promise<any>;
-    post(url: string, body: any, headers?: Record<string, string>): Promise<any>;
+    get(url: string, headers?: Record<string, string>): Promise<unknown>;
+    post(url: string, body: unknown, headers?: Record<string, string>): Promise<unknown>;
     stream(
         url: string,
-        body: any,
+        body: unknown,
         headers: Record<string, string>,
         onChunk: (chunk: string) => void,
         signal?: AbortSignal
@@ -33,7 +33,7 @@ export const httpClient: HttpClient = {
         return res.json;
     },
 
-    async post(url: string, body: any, headers: Record<string, string> = {}) {
+    async post(url: string, body: unknown, headers: Record<string, string> = {}) {
         const res = await requestUrl({
             url,
             method: "POST",
@@ -51,7 +51,7 @@ export const httpClient: HttpClient = {
 
     async stream(
         url: string,
-        body: any,
+        body: unknown,
         headers: Record<string, string>,
         onChunk: (chunk: string) => void,
         signal?: AbortSignal

@@ -36,7 +36,7 @@ export function createSseParser(onEvent: (ev: StreamEvent) => void) {
                 if (delta) {
                     onEvent({ type: "token", value: delta });
                 }
-            } catch (err) {
+            } catch {
                 // incomplete json or other event
             }
         }

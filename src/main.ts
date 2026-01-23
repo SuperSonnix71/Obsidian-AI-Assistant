@@ -17,7 +17,7 @@ export default class AiAssistantPlugin extends Plugin {
     }
 
     async onload() {
-        console.log("Loading AI Assistant Plugin...");
+        console.debug("Loading AI Assistant Plugin...");
         await this.loadSettings();
 
         // Register View
@@ -65,16 +65,16 @@ export default class AiAssistantPlugin extends Plugin {
         );
 
         // Add ribbon icon
-        this.addRibbonIcon("bot", "AI Assistant", () => {
-            this.activateView();
+        this.addRibbonIcon("bot", "AI assistant", () => {
+            void this.activateView();
         });
 
         // Add command to open view
         this.addCommand({
             id: "open-ai-assistant",
-            name: "Open AI Assistant",
+            name: "Open AI assistant",
             callback: () => {
-                this.activateView();
+                void this.activateView();
             },
         });
 
@@ -83,8 +83,8 @@ export default class AiAssistantPlugin extends Plugin {
             this.addCommand({
                 id: cmd.id,
                 name: cmd.title,
-                editorCallback: (editor, view) => {
-                    this.activateView(cmd.id);
+                editorCallback: () => {
+                    void this.activateView(cmd.id);
                 }
             });
         });
@@ -114,8 +114,8 @@ export default class AiAssistantPlugin extends Plugin {
         }
     }
 
-    async onunload() {
-        await this.saveSettings();
+    onunload() {
+        void this.saveSettings();
     }
 
     async loadSettings() {

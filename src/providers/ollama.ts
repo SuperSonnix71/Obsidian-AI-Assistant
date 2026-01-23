@@ -16,8 +16,8 @@ export class OllamaClient implements ProviderClient {
         const url = `${this.baseUrl}/api/tags`;
         const res = await httpClient.get(url);
         // Parse models[].name
-        const models = res.models || [];
-        return models.map((m: any) => ({
+        const models: Array<{ name: string }> = (res as { models?: Array<{ name: string }> }).models || [];
+        return models.map((m) => ({
             id: m.name,
             label: m.name,
             details: m

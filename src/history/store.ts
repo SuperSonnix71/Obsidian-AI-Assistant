@@ -48,7 +48,7 @@ export class HistoryService {
 
     updateThread(thread: ChatThread) {
         this.store.threads[thread.id] = thread;
-        this.save();
+        void this.save();
     }
 
     async save() {
@@ -84,7 +84,7 @@ export class HistoryService {
             content: message.content,
             createdAt: Date.now(),
             providerSnapshot: {
-                kind: provider as any,
+                kind: provider as "ollama" | "openai_compatible",
                 baseUrl: providerSettings.baseUrl || "",
                 model: providerSettings.model || "",
                 temperature: providerSettings.temperature || 0.7
@@ -93,7 +93,7 @@ export class HistoryService {
 
         thread.messages.push(chatMessage);
         thread.updatedAt = Date.now();
-        this.save();
+        void this.save();
     }
 
     clearThread(threadId: string) {
@@ -101,7 +101,7 @@ export class HistoryService {
         if (!thread) return;
         thread.messages = [];
         thread.updatedAt = Date.now();
-        this.save();
+        void this.save();
     }
 
     clearVaultThread() {
