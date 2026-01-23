@@ -187,7 +187,6 @@ Configure how long conversations are kept:
 - **Svelte** – UI components
 - **Tailwind CSS** – Styling
 - **esbuild** – Bundling
--
 
 ---
 
